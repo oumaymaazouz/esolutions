@@ -1,12 +1,13 @@
-export const base64 = (char) => {
-  return window.btoa(char);
+import {Base64} from 'js-base64';
+
+export const base64 = char => {
+  return Base64.encode(char);
 };
 
-export const formatDate = (date) => {
+export const formatDate = date => {
   const formattedDate = new Date(date);
-  return `${formattedDate.getDate()}/${
-    formattedDate.getMonth() + 1
-  }/${formattedDate.getFullYear()}`;
+  return `${formattedDate.getDate()}/${formattedDate.getMonth() +
+    1}/${formattedDate.getFullYear()}`;
 };
 
 // get array of dates between 2 dates
@@ -23,4 +24,4 @@ function getDates(startDate, endDate) {
   return dates;
 }
 
-export { getDates };
+export {getDates};
