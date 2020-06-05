@@ -1,3 +1,5 @@
+import { groupBy } from "../../common/helper";
+
 const initialState = {
   laborTransactions: null,
   laborTransactionsPreview: null,
@@ -6,7 +8,7 @@ const initialState = {
 // fetch labor transactions
 
 // 1-  Create action types + action creators of fetch labor transactions
-const FETCH_LABOR_TRANSACTIONS_REQUEST = "FETCH_LABOR_TRANSACTIONS_REQUEST";
+const FETCH_LABOR_TRANSACTIONS_REQUEST = 'FETCH_LABOR_TRANSACTIONS_REQUEST';
 
 const fetchLaborTransactionsRequest = () => {
   return {
@@ -14,48 +16,48 @@ const fetchLaborTransactionsRequest = () => {
   };
 };
 
-const FETCH_LABOR_TRANSACTIONS_SUCCESS = "FETCH_LABOR_TRANSACTIONS_SUCCESS";
+const FETCH_LABOR_TRANSACTIONS_SUCCESS = 'FETCH_LABOR_TRANSACTIONS_SUCCESS';
 
-const fetchLaborTransactionsSuccess = (data) => {
+const fetchLaborTransactionsSuccess = data => {
   return {
     type: FETCH_LABOR_TRANSACTIONS_SUCCESS,
     data,
   };
 };
 
-const FETCH_LABOR_TRANSACTIONS_FAILURE = "FETCH_LABOR_TRANSACTIONS_FAILURE";
+const FETCH_LABOR_TRANSACTIONS_FAILURE = 'FETCH_LABOR_TRANSACTIONS_FAILURE';
 
-const fetchLaborTransactionsFailure = (error) => {
+const fetchLaborTransactionsFailure = error => {
   return {
     type: FETCH_LABOR_TRANSACTIONS_FAILURE,
     error,
   };
 };
 export function $fetchLaborTransactions() {
-  return function (dispatch, getState) {
+  return function(dispatch, getState) {
     dispatch(fetchLaborTransactionsRequest());
     const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
-    const { username, maxauth } = getState().Auth;
+    const {maxauth, profile} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,refwo,startdateentered&oslc.where=laborcode="${username}"`,
+      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,refwo,startdateentered,genapprservreceipts&oslc.where=laborcode="${profile.personid}"`,
       {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           maxauth,
         },
-      }
+      },
     )
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw Error(response);
         }
         return response.json();
       })
-      .then((data) => {
-        dispatch(fetchLaborTransactionsSuccess(data["rdfs:member"]));
+      .then(data => {
+        dispatch(fetchLaborTransactionsSuccess(data['rdfs:member']));
       })
-      .catch((error) => {
+      .catch(error => {
         dispatch(fetchLaborTransactionsFailure(error));
         throw error;
       });
@@ -63,7 +65,7 @@ export function $fetchLaborTransactions() {
 }
 
 const ADD_BULK_LABOR_TRANSACTIONS_REQUEST =
-  "ADD_BULK_LABOR_TRANSACTIONS_REQUEST";
+  'ADD_BULK_LABOR_TRANSACTIONS_REQUEST';
 
 const AddBulkLaborTransactionsRequest = () => {
   return {
@@ -72,7 +74,7 @@ const AddBulkLaborTransactionsRequest = () => {
 };
 
 const ADD_BULK_LABOR_TRANSACTIONS_SUCCESS =
-  "ADD_BULK_LABOR_TRANSACTIONS_SUCCESS";
+  'ADD_BULK_LABOR_TRANSACTIONS_SUCCESS';
 
 const AddBulkLaborTransactionsSuccess = () => {
   return {
@@ -81,43 +83,43 @@ const AddBulkLaborTransactionsSuccess = () => {
 };
 
 const ADD_BULK_LABOR_TRANSACTIONS_FAILURE =
-  "ADD_BULK_LABOR_TRANSACTIONS_FAILURE";
+  'ADD_BULK_LABOR_TRANSACTIONS_FAILURE';
 
-const AddBulkLaborTransactionsFailure = (error) => {
+const AddBulkLaborTransactionsFailure = error => {
   return {
     type: ADD_BULK_LABOR_TRANSACTIONS_FAILURE,
     error,
   };
 };
 export function $AddBulkLaborTransactions(transaction) {
-  return function (dispatch, getState) {
+  return function(dispatch, getState) {
     dispatch(AddBulkLaborTransactionsRequest());
     const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
-    const { maxauth, username } = getState().Auth;
+    const {maxauth, username} = getState().Auth;
 
     transaction = {
-      siteid: "BEDFORD",
+      siteid: 'BEDFORD',
       laborcode: username,
-      gldebitacct: "6220-300-350",
+      gldebitacct: '6220-300-350',
       ...transaction,
     };
 
     const array = Object.entries(transaction).map(([key, value]) => [
-      ["spi:", key].join(""),
+      ['spi:', key].join(''),
       value,
     ]);
 
     const payload = JSON.stringify(Object.fromEntries(array));
     return fetch(`${DOMAIN_NAME}/oslc/os/oslclabtrans`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         maxauth,
-        lean: "1",
+        lean: '1',
       },
       body: payload,
     })
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw Error(response);
         }
@@ -126,7 +128,7 @@ export function $AddBulkLaborTransactions(transaction) {
       .then(() => {
         dispatch(AddBulkLaborTransactionsSuccess());
       })
-      .catch((error) => {
+      .catch(error => {
         dispatch(AddBulkLaborTransactionsFailure(error));
         throw error;
       });
@@ -135,8 +137,8 @@ export function $AddBulkLaborTransactions(transaction) {
 
 /** Preview labor transactions before adding them in the server */
 
-const PREVIEW_TRANSACTIONS_LIST = "PREVIEW_TRANSACTIONS_LIST";
-export const $previewTransactionsList = (data) => {
+const PREVIEW_TRANSACTIONS_LIST = 'PREVIEW_TRANSACTIONS_LIST';
+export const $previewTransactionsList = data => {
   return {
     type: PREVIEW_TRANSACTIONS_LIST,
     data,
@@ -152,9 +154,20 @@ export function laborReducer(state = initialState, action) {
         laborTransactions: null,
       };
     case FETCH_LABOR_TRANSACTIONS_SUCCESS:
+      const laborTransactions = action.data;
+      const transArray =
+        laborTransactions &&
+        laborTransactions.map(trans => {
+          return {
+            ...trans,
+            month: trans['spi:startdateentered'].substring(0, 7),
+          };
+        });
+      const monthlyLaborTransactions = groupBy(transArray, 'month');
       return {
         ...state,
-        laborTransactions: action.data,
+        laborTransactions,
+        monthlyLaborTransactions,
       };
     case PREVIEW_TRANSACTIONS_LIST:
       return {

@@ -7,12 +7,32 @@ import ListTransacrtionsView from './ListTransacrtionsView';
 import COLORS from '../../common/colors';
 import AddTransactionsView from './AddTransactionsView';
 import PreviewAddTransactionsView from './PreviewAddTransactionsView';
+import MonthlyTransList from './MonthlyTransList';
 
 const Stack = createStackNavigator();
 
 const LaborStack = props => {
   return (
-    <Stack.Navigator initialRouteName="TransactionsList">
+    <Stack.Navigator initialRouteName="MonthlyTransList">
+      <Stack.Screen
+        name="MonthlyTransList"
+        component={MonthlyTransList}
+        options={{
+          header: () => (
+            <Header style={{backgroundColor: COLORS.blue}}>
+              <Left>
+                <Button
+                  transparent
+                  onPress={() => props.navigation.toggleDrawer()}>
+                  <Icon type="Feather" name="menu" style={{fontSize: 34}} />
+                </Button>
+              </Left>
+              <Body />
+              <Right />
+            </Header>
+          ),
+        }}
+      />
       <Stack.Screen
         name="TransactionsList"
         component={ListTransacrtionsView}

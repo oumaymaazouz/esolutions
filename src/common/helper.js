@@ -28,4 +28,14 @@ function isPositiveNumber(n) {
   return Number(n) === n && Number(n) > 0;
 }
 
+export const groupBy = (arrayOfObjects, property) => {
+  return arrayOfObjects.reduce((acc, obj) => {
+    let key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+};
 export {getDates, isPositiveNumber};

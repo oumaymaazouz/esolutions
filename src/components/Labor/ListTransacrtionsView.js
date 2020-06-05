@@ -13,7 +13,9 @@ import COLORS from '../../common/colors';
 import {formatDate} from '../../common/helper';
 
 const withStore = connect(state => ({
+  profile: state.Auth.profile,
   laborTransactions: state.Labor.laborTransactions,
+  monthlyLaborTransactions: state.Labor.monthlyLaborTransactions,
 }));
 
 const LaborTransactionsView = props => {
@@ -30,45 +32,52 @@ const LaborTransactionsView = props => {
   const getList = () => {
     return (
       <View>
-        <FlatList
-          data={props.laborTransactions && props.laborTransactions}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              onPress={() =>
-                console.log('GO TO DETAILS VIEW, NOT YET IMPLEMENTED!')
-              }>
-              <Card>
-                <CardItem header bordered>
-                  <Text style={styles.item_header_description}>
-                    {`Workorder Ref : ${
-                      item['spi:refwo'] ? item['spi:refwo'] : '--'
-                    }`}
-                  </Text>
-                </CardItem>
-                <CardItem bordered>
-                  <Body>
-                    <Text style={styles.item_body_item}>{`Labor Code : ${
-                      item['spi:laborcode'] ? item['spi:laborcode'] : '--'
-                    }`}</Text>
-                    <Text style={styles.item_body_item}>{`Start date : ${
-                      item['spi:startdateentered']
-                        ? formatDate(item['spi:startdateentered'])
-                        : '--'
-                    }`}</Text>
-                  </Body>
-                </CardItem>
-                <CardItem footer bordered>
-                  <Text style={styles.item_footer_text}>
-                    {`Regular hours: ${
-                      item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
-                    }`}
-                  </Text>
-                </CardItem>
-              </Card>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
+        <View>
+          {/* <Text style={styles.indicatedMonth}>{props.route.params.month}</Text> */}
+          <FlatList
+            data={
+              props.monthlyLaborTransactions &&
+              props.monthlyLaborTransactions[props.route.params.month]
+            }
+            renderItem={({item}) => (
+              <TouchableOpacity
+                onPress={() =>
+                  console.log('GO TO DETAILS VIEW, NOT YET IMPLEMENTED!')
+                }>
+                <Card>
+                  <CardItem header bordered>
+                    <Text style={styles.item_header_description}>
+                      {`WO# : ${
+                        item['spi:refwo'] ? item['spi:refwo'] : '--'
+                      }`}
+                    </Text>
+                  </CardItem>
+                  <CardItem bordered>
+                    <Body>
+                      <Text style={styles.item_body_item}>{`Labor : ${
+                        item['spi:laborcode'] ? item['spi:laborcode'] : '--'
+                      } - ${props.profile.displayName}`}</Text>
+                      <Text style={styles.item_body_item}>{`Date : ${
+                        item['spi:startdateentered']
+                          ? new Date(item['spi:startdateentered']).toISOString().substring(0,10)
+                          : '--'
+                      }`}</Text>
+                    </Body>
+                  </CardItem>
+                  <CardItem footer bordered>
+                    <Text style={styles.item_footer_text}>
+                      {`Reported hours: ${
+                        item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
+                      }`}
+                    </Text>
+                  </CardItem>
+                </Card>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+
         <Fab
           style={{backgroundColor: COLORS.blue}}
           position="bottomRight"
@@ -84,12 +93,19 @@ const LaborTransactionsView = props => {
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
         {!dataReady ? <Loader /> : getList()}
+        <Text>list</Text>
       </Content>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
+  indicatedMonth: {
+    color: COLORS.darkGray,
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 20,
+  },
   headerTitle: {
     color: COLORS.white,
     fontSize: 16,
