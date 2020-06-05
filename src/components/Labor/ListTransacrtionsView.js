@@ -67,13 +67,13 @@ const LaborTransactionsView = props => {
               </Card>
             </TouchableOpacity>
           )}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
         />
         <Fab
           style={{backgroundColor: COLORS.blue}}
           position="bottomRight"
           onPress={() => props.navigation.push('AddTransactions')}>
-           <Icon type="Feather" name="plus" />
+          <Icon type="Feather" name="plus" />
         </Fab>
       </View>
     );

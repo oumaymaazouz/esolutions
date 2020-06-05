@@ -24,4 +24,8 @@ function getDates(startDate, endDate) {
   return dates;
 }
 
-export {getDates};
+function isPositiveNumber(n) {
+  return Number(n) === n && Number(n) > 0;
+}
+
+export {getDates, isPositiveNumber};

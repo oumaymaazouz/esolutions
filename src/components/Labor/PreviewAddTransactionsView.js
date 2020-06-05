@@ -73,7 +73,7 @@ const PreviewAddTransactionsView = props => {
             </CardItem>
           </Card>
         )}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
       />
       <Button style={styles.btnSubmit} onPress={() => submit()}>
         <Text style={styles.btnSubmitText}>Confirm</Text>
