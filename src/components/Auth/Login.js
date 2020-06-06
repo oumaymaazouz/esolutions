@@ -23,7 +23,6 @@ const screenHeight = Dimensions.get('window').height;
 
 const withStore = connect(state => ({
   maxupg: state.Auth.maxupg,
-  maxauth: state.Auth.maxauth,
 }));
 
 const LoginView = props => {
@@ -31,22 +30,19 @@ const LoginView = props => {
   const [password, setPassword] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
-  const loginAction = async (usern, pass) => {
+  const loginAction = (usern, pass) => {
     const {dispatch} = getStore();
 
-    try {
-      await dispatch($login(usern.trim(), pass));
-      console.log(props.maxauth, '---------------------');
-      await dispatch($fetchProfile(props.maxauth));
-      props.navigation.navigate('Home');
-    } catch (error) {
-      setErrorMessage('Please fill correct credentials.');
-      Toast.show({
-        text: 'Wrong credentials!',
-        type: 'danger',
-        duration: 6000,
+    dispatch($login(usern.trim(), pass))
+      .then(() => props.navigation.navigate('Home'))
+      .catch(error => {
+        setErrorMessage('Please fill correct credentials.');
+        Toast.show({
+          text: 'Wrong credentials!',
+          type: 'danger',
+          duration: 6000,
+        });
       });
-    }
   };
 
   return (
