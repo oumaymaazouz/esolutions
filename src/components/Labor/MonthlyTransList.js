@@ -12,6 +12,7 @@ import {
   Right,
   Icon,
   Body,
+  View,
 } from 'native-base';
 
 import COLORS from '../../common/colors';
@@ -40,25 +41,53 @@ const MonthlyTransList = props => {
       <Content>
         <List>
           {props.monthlyLaborTransactions ? (
-            Object.entries(props.monthlyLaborTransactions).map(arr => (
-              <ListItem
-                key={arr[0]}
-                onPress={() =>
-                  props.navigation.navigate('TransactionsList', {month: arr[0]})
-                }>
-                <Left>
-                  <Text style={styles.listItemText}>{arr[0]}</Text>
-                </Left>
-                <Body>
-                  <Text style={styles.listItemText}>{`${
-                    arr[1].length
-                  } records`}</Text>
-                </Body>
-                <Right>
-                  <Icon type="AntDesign" name="arrowright" />
-                </Right>
-              </ListItem>
-            ))
+            Object.entries(props.monthlyLaborTransactions).map(arr => {
+              const notApprovedTrans = arr[1].filter(
+                item => !item['spi:genapprservreceipt'],
+              ).length;
+              const approvedTrans = arr[1].filter(
+                item => !!item['spi:genapprservreceipt'],
+              ).length;
+              return (
+                <ListItem
+                  key={arr[0]}
+                  onPress={() =>
+                    props.navigation.navigate('TransactionsList', {
+                      month: arr[0],
+                    })
+                  }>
+                  <Left>
+                    <Text style={styles.listItemText}>{arr[0]}</Text>
+                  </Left>
+                  <Body>
+                    {/* <Text style={styles.listItemText}>{`${
+                      arr[1].length
+                    } records`}</Text> */}
+                    <View style={styles.transCountView}>
+                      <Icon
+                        type="FontAwesome"
+                        name="circle"
+                        style={styles.transCountApprovedIcon}
+                      />
+                      <Text style={styles.listItemText}>{approvedTrans}</Text>
+                    </View>
+                    <View style={styles.transCountView}>
+                      <Icon
+                        type="FontAwesome"
+                        name="circle"
+                        style={styles.transCountNotApprovedIcon}
+                      />
+                      <Text style={styles.listItemText}>
+                        {notApprovedTrans}
+                      </Text>
+                    </View>
+                  </Body>
+                  <Right>
+                    <Icon type="AntDesign" name="arrowright" />
+                  </Right>
+                </ListItem>
+              );
+            })
           ) : (
             <Loader />
           )}
@@ -73,5 +102,8 @@ const styles = StyleSheet.create({
     color: COLORS.lightGray,
     fontSize: 14,
   },
+  transCountView: {flexDirection: 'row', alignItems: 'center'},
+  transCountApprovedIcon: {color: '#5cb85c', fontSize: 15, marginRight: 10},
+  transCountNotApprovedIcon: {color: '#d9534f', fontSize: 15, marginRight: 10},
 });
 export default withStore(MonthlyTransList);
