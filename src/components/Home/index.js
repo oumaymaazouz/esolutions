@@ -7,6 +7,7 @@ import MappingView from '../Tickets/MappingView';
 import TicketsStack from '../Tickets';
 import ProfileView from '../Auth/ProfileView';
 import LaborStack from '../Labor';
+import COLORS from '../../common/colors';
 
 const Drawer = createDrawerNavigator();
 
@@ -20,7 +21,16 @@ const Home = () => {
       initialRouteName="Profile"
       drawerPosition="left"
       drawerType="front">
-      <Drawer.Screen name="Profile" component={ProfileView} />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileView}
+        options={{
+          headerTitle: 'Profile',
+          headerTitleStyle: {fontSize: 16},
+          headerStyle: {backgroundColor: COLORS.blue},
+          headerTintColor: COLORS.white,
+        }}
+      />
       <Drawer.Screen name="LaborTransactions" component={LaborStack} />
       {/* <Drawer.Screen name="Tickets" component={TicketsStack} /> */}
       <Drawer.Screen name="Map" component={MappingView} />

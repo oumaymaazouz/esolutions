@@ -54,15 +54,14 @@ const MonthlyTransList = props => {
                   onPress={() =>
                     props.navigation.navigate('TransactionsList', {
                       month: arr[0],
+                      approvedTrans,
+                      notApprovedTrans,
                     })
                   }>
                   <Left>
                     <Text style={styles.listItemText}>{arr[0]}</Text>
                   </Left>
                   <Body>
-                    {/* <Text style={styles.listItemText}>{`${
-                      arr[1].length
-                    } records`}</Text> */}
                     <View style={styles.transCountView}>
                       <Icon
                         type="FontAwesome"

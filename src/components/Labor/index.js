@@ -1,4 +1,6 @@
 import React from 'react';
+
+import {Text, View, StyleSheet} from 'react-native';
 import {Header, Left, Button, Icon, Body, Right} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -27,7 +29,11 @@ const LaborStack = props => {
                   <Icon type="Feather" name="menu" style={{fontSize: 34}} />
                 </Button>
               </Left>
-              <Body />
+              <Body>
+                <Text style={{fontSize: 14, color: COLORS.white}}>
+                  Monthly Transactions
+                </Text>
+              </Body>
               <Right />
             </Header>
           ),
@@ -36,7 +42,7 @@ const LaborStack = props => {
       <Stack.Screen
         name="TransactionsList"
         component={ListTransacrtionsView}
-        options={{
+        options={({route}) => ({
           header: () => (
             <Header style={{backgroundColor: COLORS.blue}}>
               <Left>
@@ -46,11 +52,36 @@ const LaborStack = props => {
                   <Icon type="Feather" name="menu" style={{fontSize: 34}} />
                 </Button>
               </Left>
-              <Body />
-              <Right />
+              <Body style={styles.transListHeaderBody}>
+                <Text style={{fontSize: 16, color: COLORS.white}}>
+                  {`Transactions: ${route.params.month}`}
+                </Text>
+              </Body>
+              <Right style={styles.transInfos}>
+                <View style={styles.transCountView}>
+                  <Icon
+                    type="FontAwesome"
+                    name="circle"
+                    style={styles.transCountApprovedIcon}
+                  />
+                  <Text style={styles.transCountText}>
+                    {route.params.approvedTrans}
+                  </Text>
+                </View>
+                <View style={styles.transCountView}>
+                  <Icon
+                    type="FontAwesome"
+                    name="circle"
+                    style={styles.transCountNotApprovedIcon}
+                  />
+                  <Text style={styles.transCountText}>
+                    {route.params.notApprovedTrans}
+                  </Text>
+                </View>
+              </Right>
             </Header>
           ),
-        }}
+        })}
       />
       <Stack.Screen
         name="AddTransactions"
@@ -76,4 +107,22 @@ const LaborStack = props => {
   );
 };
 
+const styles = StyleSheet.create({
+  transListHeaderBody: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 20,
+  },
+  transInfos: {
+    flexDirection: 'column',
+    marginRight: 20,
+  },
+  transCountText: {
+    color: COLORS.white,
+    fontSize: 14,
+  },
+  transCountView: {flexDirection: 'row', alignItems: 'center'},
+  transCountApprovedIcon: {color: '#5cb85c', fontSize: 15, marginRight: 10},
+  transCountNotApprovedIcon: {color: '#d9534f', fontSize: 15, marginRight: 10},
+});
 export default LaborStack;
