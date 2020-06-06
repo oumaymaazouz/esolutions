@@ -36,6 +36,7 @@ const LoginView = props => {
 
     try {
       await dispatch($login(usern.trim(), pass));
+      console.log(props.maxauth, '---------------------');
       await dispatch($fetchProfile(props.maxauth));
       props.navigation.navigate('Home');
     } catch (error) {

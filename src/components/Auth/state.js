@@ -52,6 +52,7 @@ function $login(username, password) {
         return response.json();
       })
       .then(payload => {
+        console.log(payload, '******************')
         dispatch(loginSuccess({...payload, username, maxauth}));
         // dispatch($fetchProfile(maxauth));
         return payload;

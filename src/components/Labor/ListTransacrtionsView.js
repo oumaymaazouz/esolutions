@@ -2,7 +2,17 @@ import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 
 import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
-import {Container, Body, Content, Card, CardItem, Fab, Icon} from 'native-base';
+import {
+  Container,
+  Body,
+  Content,
+  Card,
+  CardItem,
+  Fab,
+  Icon,
+  Left,
+  Right,
+} from 'native-base';
 
 import Loader from '../Shared/Loader';
 
@@ -30,6 +40,11 @@ const LaborTransactionsView = props => {
   }, [props]);
 
   const getList = () => {
+    console.log('++++++++++++++++++++++++++++++');
+    console.log(
+      props.monthlyLaborTransactions &&
+        props.monthlyLaborTransactions[props.route.params.month],
+    );
     return (
       <View>
         <View>
@@ -47,9 +62,7 @@ const LaborTransactionsView = props => {
                 <Card>
                   <CardItem header bordered>
                     <Text style={styles.item_header_description}>
-                      {`WO# : ${
-                        item['spi:refwo'] ? item['spi:refwo'] : '--'
-                      }`}
+                      {`WO# : ${item['spi:refwo'] ? item['spi:refwo'] : '--'}`}
                     </Text>
                   </CardItem>
                   <CardItem bordered>
@@ -59,17 +72,39 @@ const LaborTransactionsView = props => {
                       } - ${props.profile.displayName}`}</Text>
                       <Text style={styles.item_body_item}>{`Date : ${
                         item['spi:startdateentered']
-                          ? new Date(item['spi:startdateentered']).toISOString().substring(0,10)
+                          ? new Date(item['spi:startdateentered'])
+                              .toISOString()
+                              .substring(0, 10)
                           : '--'
                       }`}</Text>
                     </Body>
                   </CardItem>
                   <CardItem footer bordered>
-                    <Text style={styles.item_footer_text}>
-                      {`Reported hours: ${
-                        item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
-                      }`}
-                    </Text>
+                    <Left>
+                      <Text style={styles.item_footer_text}>
+                        {`Reported hours: ${
+                          item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
+                        }`}
+                      </Text>
+                    </Left>
+                    <Right>
+                      <Text>
+                        {' '}
+                        {item['spi:genapprservreceipt'] ? (
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={{color: '#5cb85c', fontSize: 30 }}
+                          />
+                        ) : (
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={{color: '#d9534f', fontSize: 30 }}
+                          />
+                        )}
+                      </Text>
+                    </Right>
                   </CardItem>
                 </Card>
               </TouchableOpacity>
