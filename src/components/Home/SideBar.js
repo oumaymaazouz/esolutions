@@ -29,7 +29,7 @@ function SideBar(props) {
           </TouchableOpacity>
         )}
       </View>
-      <DrawerItem
+      {/* <DrawerItem
         label="Tickets"
         labelStyle={styles.labelStyle}
         icon={() => (
@@ -40,7 +40,7 @@ function SideBar(props) {
           />
         )}
         onPress={() => props.navigation.navigate('Tickets')}
-      />
+      /> */}
       <DrawerItem
         label="Labor Transactions"
         labelStyle={styles.labelStyle}

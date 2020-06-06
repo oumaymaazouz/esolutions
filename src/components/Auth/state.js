@@ -38,7 +38,6 @@ function $login(username, password) {
     dispatch(loginRequest());
     const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
     const maxauth = base64(`${username}:${password}`);
-
     return fetch(`${DOMAIN_NAME}/oslc/login`, {
       method: 'POST',
       headers: {
@@ -54,7 +53,7 @@ function $login(username, password) {
       })
       .then(payload => {
         dispatch(loginSuccess({...payload, username, maxauth}));
-        dispatch($fetchProfile(maxauth));
+        // dispatch($fetchProfile(maxauth));
         return payload;
       })
       .catch(error => {

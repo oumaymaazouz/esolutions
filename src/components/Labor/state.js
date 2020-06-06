@@ -1,4 +1,4 @@
-import { groupBy } from "../../common/helper";
+import {groupBy} from '../../common/helper';
 
 const initialState = {
   laborTransactions: null,
@@ -39,7 +39,9 @@ export function $fetchLaborTransactions() {
     const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
     const {maxauth, profile} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,refwo,startdateentered,genapprservreceipts&oslc.where=laborcode="${profile.personid}"`,
+      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,refwo,startdateentered,genapprservreceipts&oslc.where=laborcode="${
+        profile.personid
+      }"`,
       {
         method: 'GET',
         headers: {
@@ -152,6 +154,7 @@ export function laborReducer(state = initialState, action) {
       return {
         ...state,
         laborTransactions: null,
+        monthlyLaborTransactions: null,
       };
     case FETCH_LABOR_TRANSACTIONS_SUCCESS:
       const laborTransactions = action.data;

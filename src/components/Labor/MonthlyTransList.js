@@ -39,9 +39,10 @@ const MonthlyTransList = props => {
     <Container>
       <Content>
         <List>
-          {props.monthlyLaborTransactions ?
+          {props.monthlyLaborTransactions ? (
             Object.entries(props.monthlyLaborTransactions).map(arr => (
               <ListItem
+                key={arr[0]}
                 onPress={() =>
                   props.navigation.navigate('TransactionsList', {month: arr[0]})
                 }>
@@ -58,9 +59,9 @@ const MonthlyTransList = props => {
                 </Right>
               </ListItem>
             ))
-            :
+          ) : (
             <Loader />
-          }
+          )}
         </List>
       </Content>
     </Container>

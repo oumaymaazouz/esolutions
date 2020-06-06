@@ -17,12 +17,12 @@ const Home = () => {
       drawerContentOptions={{
         activeTintColor: '#1d6b5b',
       }}
-      initialRouteName="Tickets"
+      initialRouteName="LaborTransactions"
       drawerPosition="left"
       drawerType="front">
       <Drawer.Screen name="Profile" component={ProfileView} />
       <Drawer.Screen name="LaborTransactions" component={LaborStack} />
-      <Drawer.Screen name="Tickets" component={TicketsStack} />
+      {/* <Drawer.Screen name="Tickets" component={TicketsStack} /> */}
       <Drawer.Screen name="Map" component={MappingView} />
     </Drawer.Navigator>
   );
