@@ -167,10 +167,17 @@ export function laborReducer(state = initialState, action) {
           };
         });
       const monthlyLaborTransactions = groupBy(transArray, 'month');
+      const monthlyLabTransDesc = Object.keys(monthlyLaborTransactions)
+        .sort((a, b) => new Date(b) - new Date(a))
+        .reduce((acc, cv) => {
+          acc[cv] = monthlyLaborTransactions[cv];
+          return acc;
+        }, {});
+
       return {
         ...state,
         laborTransactions,
-        monthlyLaborTransactions,
+        monthlyLaborTransactions: monthlyLabTransDesc,
       };
     case PREVIEW_TRANSACTIONS_LIST:
       return {

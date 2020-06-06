@@ -40,11 +40,6 @@ const LaborTransactionsView = props => {
   }, [props]);
 
   const getList = () => {
-    console.log('++++++++++++++++++++++++++++++');
-    console.log(
-      props.monthlyLaborTransactions &&
-        props.monthlyLaborTransactions[props.route.params.month],
-    );
     return (
       <View>
         <View>
