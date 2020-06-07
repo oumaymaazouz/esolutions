@@ -78,15 +78,19 @@ const LaborTransactionsView = props => {
     ]);
   };
 
+  const dataList =
+    props.monthlyLaborTransactions &&
+    props.monthlyLaborTransactions[props.route.params.month].sort(
+      (a, b) =>
+        new Date(b['spi:startdateentered']) -
+        new Date(a['spi:startdateentered']),
+    );
   const getList = () => {
     return (
       <View style={{flex: 1}}>
         <View>
           <FlatList
-            data={
-              props.monthlyLaborTransactions &&
-              props.monthlyLaborTransactions[props.route.params.month]
-            }
+            data={props.monthlyLaborTransactions && dataList}
             renderItem={({item}) => {
               const day = item['spi:startdateentered']
                 ? new Date(item['spi:startdateentered']).getDay()
@@ -95,7 +99,6 @@ const LaborTransactionsView = props => {
                 day === 5 || day === 6
                   ? {backgroundColor: COLORS.highlight}
                   : {};
-              console.log(day)    
               return (
                 <Card>
                   <CardItem
@@ -128,31 +131,47 @@ const LaborTransactionsView = props => {
                   </CardItem>
                   <CardItem bordered style={highlitCardStyle}>
                     <Body>
-                      <Text style={styles.cardDescItem}>{`Labor : ${
-                        item['spi:laborcode'] ? item['spi:laborcode'] : '--'
-                      } - ${props.profile.displayName}`}</Text>
-                      <Text style={styles.cardDescItem}>{`Date   : ${
-                        item['spi:startdateentered']
-                          ? fullFormatDate(item['spi:startdateentered'])
-                          : '--'
-                      }`}</Text>
-                      <Text style={styles.cardDescItem}>{`Task   : ${
-                        item.workorder.taskid ? item.workorder.taskid : '--'
-                      } - ${
-                        item.workorder.description
-                          ? item.workorder.description
-                          : '--'
-                      }`}</Text>
+                      <View style={styles.cardItemStyle}>
+                        <Text style={styles.cardLabelItem}>{`Date   : `}</Text>
+                        <Text style={styles.cardDescItem}>{`${
+                          item['spi:startdateentered']
+                            ? fullFormatDate(
+                                item['spi:startdateentered'],
+                              ).toUpperCase()
+                            : '--'
+                        }`}</Text>
+                      </View>
 
-                      <Text style={styles.cardDescItem}>{`Craft   : ${
-                        item['spi:craft'] ? item['spi:craft'] : '--'
-                      }`}</Text>
+                      <View style={styles.cardItemStyle}>
+                        <Text style={styles.cardLabelItem}>{`Task   :`} </Text>
+                        <Text style={styles.cardDescItem}>{`${
+                          item.workorder.taskid ? item.workorder.taskid : '--'
+                        } - ${
+                          item.workorder.description
+                            ? item.workorder.description
+                            : '--'
+                        }`}</Text>
+                      </View>
+
+                      <View style={styles.cardItemStyle}>
+                        <Text style={styles.cardLabelItem}>{'Labor : '}</Text>
+                        <Text style={styles.cardDescItem}>{`${
+                          item['spi:laborcode'] ? item['spi:laborcode'] : '--'
+                        } - ${props.profile.displayName}`}</Text>
+                      </View>
+
+                      <View style={styles.cardItemStyle}>
+                        <Text style={styles.cardLabelItem}>{'Craft  :'}</Text>
+                        <Text style={styles.cardDescItem}>{`  ${
+                          item['spi:craft'] ? item['spi:craft'] : '--'
+                        }`}</Text>
+                      </View>
                     </Body>
                   </CardItem>
                   <CardItem footer bordered style={highlitCardStyle}>
                     <Left>
                       <Text style={styles.regHrsText}>
-                        {`Reported hours: ${
+                        {`REPORTED HOURS : ${
                           item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
                         }`}
                       </Text>
@@ -204,6 +223,10 @@ const LaborTransactionsView = props => {
 };
 
 const styles = StyleSheet.create({
+  cardItemStyle: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
   indicatedMonth: {
     color: COLORS.darkGray,
     fontSize: 20,
@@ -214,7 +237,12 @@ const styles = StyleSheet.create({
     height: 'auto',
   },
   btnDeleteIcon: {color: COLORS.danger, fontSize: 30, marginTop: 0},
-  cardHeaderDesc: {marginLeft: 14, marginRight: 7},
+  cardHeaderDesc: {marginRight: 7},
+  cardLabelItem: {
+    marginRight: 14,
+    fontWeight: 'bold',
+    color: COLORS.darkGray,
+  },
   cardHeaderWonum: {
     color: COLORS.darkGray,
     fontSize: 16,
@@ -222,7 +250,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignContent: 'flex-start',
   },
 

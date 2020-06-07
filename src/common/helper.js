@@ -68,9 +68,9 @@ const days = [
 
 export const fullFormatDate = date => {
   const dayName = days[new Date(date).getDay()];
-  const day = new Date(date).getDate();
+  const day = ('0' + new Date(date).getDate()).slice(-2);
   const monthIndex = new Date(date).getMonth();
   const year = new Date(date).getFullYear();
-  return `${dayName} on ${day} ${months[monthIndex]} ${year}`;
+  return `${dayName} ${day} ${months[monthIndex]} ${year}`;
 };
 export {getDates, isPositiveNumber};
