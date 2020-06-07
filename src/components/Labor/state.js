@@ -38,7 +38,7 @@ export function $fetchLaborTransactions() {
     dispatch(fetchLaborTransactionsRequest());
     const {DOMAIN_NAME, maxauth, profile} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,refwo,startdateentered,genapprservreceipt&oslc.where=laborcode="${
+      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,startdateentered,genapprservreceipt,craft,workorder.description,workorder.taskid,workordernt.description,workordernt.wonum&oslc.where=laborcode="${
         profile.personid
       }"`,
       {

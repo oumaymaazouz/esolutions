@@ -55,9 +55,18 @@ const LaborTransactionsView = props => {
                   console.log('GO TO DETAILS VIEW, NOT YET IMPLEMENTED!')
                 }>
                 <Card>
-                  <CardItem header bordered>
-                    <Text style={styles.item_header_description}>
-                      {`WO# : ${item['spi:refwo'] ? item['spi:refwo'] : '--'}`}
+                  <CardItem header bordered style={styles.cardHeader}>
+                    <Text style={styles.cardHeaderWonum}>
+                      {`WO# : ${
+                        item.workordernt.wonum ? item.workordernt.wonum : '--'
+                      }`}
+                    </Text>
+                    <Text style={styles.cardHeaderWodesc}>
+                      {`WODESC : ${
+                        item.workordernt.description
+                          ? item.workordernt.description
+                          : '--'
+                      }`}
                     </Text>
                   </CardItem>
                   <CardItem bordered>
@@ -69,6 +78,17 @@ const LaborTransactionsView = props => {
                         item['spi:startdateentered']
                           ? fullFormatDate(item['spi:startdateentered'])
                           : '--'
+                      }`}</Text>
+                      <Text style={styles.item_body_item}>{`Task : ${
+                        item.workorder.taskid ? item.workorder.taskid : '--'
+                      }`}</Text>
+                      <Text style={styles.item_body_item}>{`Summery : ${
+                        item.workorder.description
+                          ? item.workorder.description
+                          : '--'
+                      }`}</Text>
+                      <Text style={styles.item_body_item}>{`Craft : ${
+                        item['spi:craft'] ? item['spi:craft'] : '--'
                       }`}</Text>
                     </Body>
                   </CardItem>
@@ -128,6 +148,7 @@ const LaborTransactionsView = props => {
 };
 
 const styles = StyleSheet.create({
+  cardHeader: {flexDirection: 'column', alignItems: 'flex-start'},
   indicatedMonth: {
     color: COLORS.darkGray,
     fontSize: 20,
@@ -153,9 +174,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.darkGray,
   },
-  item_header_description: {
+  cardHeaderWonum: {
     color: COLORS.darkGray,
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cardHeaderWodesc: {
+    color: COLORS.darkGray,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   item_body_item: {
