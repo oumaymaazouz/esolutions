@@ -1,9 +1,19 @@
 import {base64} from '../../common/helper';
 
 const initialState = {
+  DOMAIN_NAME: null,
   maxupg: null,
   maxauth: null,
   profile: null,
+};
+
+const SAVE_DOMAIN = 'SAVE_DOMAIN';
+
+export const $saveDomain = apiEndpoint => {
+  return {
+    type: SAVE_DOMAIN,
+    data: apiEndpoint,
+  };
 };
 
 // 1-  Create action types + action creators of login
@@ -33,32 +43,28 @@ const loginFailure = error => {
   };
 };
 //# login function
-function $login(username, password) {
-  return function(dispatch, getState) {
+function $login(domain, username, password) {
+  return async function(dispatch) {
+    dispatch($saveDomain(domain));
     dispatch(loginRequest());
-    const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
     const maxauth = base64(`${username}:${password}`);
-    return fetch(`${DOMAIN_NAME}/oslc/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        maxauth,
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response);
-        }
-        return response.json();
-      })
-      .then(payload => {
-        dispatch(loginSuccess({...payload, username, maxauth}));
-        return payload;
-      })
-      .catch(error => {
-        dispatch(loginFailure(error));
-        throw error;
+    try {
+      const responseLogin = await fetch(`${domain}/oslc/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
       });
+      if (!responseLogin.ok) {
+        throw Error(responseLogin);
+      }
+      const payload = await responseLogin.json();
+      return dispatch(loginSuccess({...payload, username, maxauth}));
+    } catch (error) {
+      dispatch(loginFailure(error));
+      throw error;
+    }
   };
 }
 
@@ -92,7 +98,7 @@ const fetchProfileFailure = error => {
 function $fetchProfile(maxauth) {
   return function(dispatch, getState) {
     dispatch(fetchProfileRequest());
-    const DOMAIN_NAME = getState().SystemConfig.DOMAIN_NAME;
+    const {DOMAIN_NAME} = getState().Auth;
     return fetch(`${DOMAIN_NAME}/oslc/whoami`, {
       method: 'GET',
       headers: {
@@ -119,6 +125,11 @@ function $fetchProfile(maxauth) {
 // 2- Create reducer
 export function authReducer(state = initialState, action) {
   switch (action.type) {
+    case SAVE_DOMAIN:
+      return {
+        ...state,
+        DOMAIN_NAME: action.data,
+      };
     case LOGIN_SUCCESS:
       return {
         ...state,

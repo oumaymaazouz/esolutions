@@ -10,6 +10,7 @@ import {
   Item,
   Header,
   Toast,
+  Icon,
 } from 'native-base';
 
 import LOGO from '../../assets/logo.png';
@@ -26,14 +27,15 @@ const withStore = connect(state => ({
 }));
 
 const LoginView = props => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [domain, setDomain] = useState('http://ess-maximosupport.com/support');
+  const [username, setUsername] = useState('mohamed.chihaoui');
+  const [password, setPassword] = useState('Esolutions2016');
 
   const [errorMessage, setErrorMessage] = useState('');
   const loginAction = (usern, pass) => {
     const {dispatch} = getStore();
 
-    dispatch($login(usern.trim(), pass))
+    dispatch($login(domain, usern.trim(), pass))
       .then(() => props.navigation.navigate('Home'))
       .catch(error => {
         setErrorMessage('Please fill correct credentials.');
@@ -54,6 +56,25 @@ const LoginView = props => {
         </View>
         <Form style={styles.form}>
           <Item>
+            <Icon
+              type="FontAwesome5"
+              name="star-of-life"
+              style={styles.mandatoryIcon}
+            />
+            <Input
+              style={styles.input}
+              placeholder="https://<host>:<port>/<context>"
+              value={domain}
+              placeholderTextColor={COLORS.lightGray}
+              onChangeText={value => setDomain(value)}
+            />
+          </Item>
+          <Item>
+            <Icon
+              type="FontAwesome5"
+              name="star-of-life"
+              style={styles.mandatoryIcon}
+            />
             <Input
               placeholder="Username"
               placeholderTextColor={COLORS.lightGray}
@@ -63,6 +84,11 @@ const LoginView = props => {
             />
           </Item>
           <Item>
+            <Icon
+              type="FontAwesome5"
+              name="star-of-life"
+              style={styles.mandatoryIcon}
+            />
             <Input
               placeholder="Password"
               placeholderTextColor={COLORS.lightGray}
@@ -83,7 +109,7 @@ const LoginView = props => {
               title="Login"
               style={styles.loginButton}
               color={COLORS.blue}
-              disabled={!username || !password}
+              disabled={!domain || !username || !password}
               onPress={() => loginAction(username, password)}
             />
           </View>
@@ -112,6 +138,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     color: COLORS.darkGray,
     fontSize: 14,
+  },
+  mandatoryIcon: {
+    color: COLORS.danger,
+    fontSize: 6,
+    marginLeft: 20,
+    marginBottom: 10,
   },
   loginButton: {
     marginTop: 40,

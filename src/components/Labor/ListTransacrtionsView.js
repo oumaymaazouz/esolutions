@@ -20,7 +20,7 @@ import {getStore} from '../../store';
 import {$fetchLaborTransactions} from './state';
 import COLORS from '../../common/colors';
 
-import {formatDate} from '../../common/helper';
+import {formatDate, fullFormatDate} from '../../common/helper';
 
 const withStore = connect(state => ({
   profile: state.Auth.profile,
@@ -67,9 +67,7 @@ const LaborTransactionsView = props => {
                       } - ${props.profile.displayName}`}</Text>
                       <Text style={styles.item_body_item}>{`Date : ${
                         item['spi:startdateentered']
-                          ? new Date(item['spi:startdateentered'])
-                              .toISOString()
-                              .substring(0, 10)
+                          ? fullFormatDate(item['spi:startdateentered'])
                           : '--'
                       }`}</Text>
                     </Body>
@@ -89,13 +87,13 @@ const LaborTransactionsView = props => {
                           <Icon
                             type="FontAwesome"
                             name="circle"
-                            style={{color: '#5cb85c', fontSize: 30 }}
+                            style={{color: COLORS.success, fontSize: 30}}
                           />
                         ) : (
                           <Icon
                             type="FontAwesome"
                             name="circle"
-                            style={{color: '#d9534f', fontSize: 30 }}
+                            style={{color: COLORS.danger, fontSize: 30}}
                           />
                         )}
                       </Text>

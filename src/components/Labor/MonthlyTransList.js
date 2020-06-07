@@ -102,7 +102,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   transCountView: {flexDirection: 'row', alignItems: 'center'},
-  transCountApprovedIcon: {color: '#5cb85c', fontSize: 15, marginRight: 10},
-  transCountNotApprovedIcon: {color: '#d9534f', fontSize: 15, marginRight: 10},
+  transCountApprovedIcon: {
+    color: COLORS.success,
+    fontSize: 15,
+    marginRight: 10,
+  },
+  transCountNotApprovedIcon: {
+    color: COLORS.danger,
+    fontSize: 15,
+    marginRight: 10,
+  },
 });
 export default withStore(MonthlyTransList);

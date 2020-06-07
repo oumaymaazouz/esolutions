@@ -13,7 +13,6 @@ import {Root} from 'native-base';
 import {Provider} from 'react-redux';
 
 import {getStore, setUpStore} from './src/store';
-import ServerConnectView from './src/components/SystemConfig/ServerConnectView';
 import LoginView from './src/components/Auth/Login';
 import Home from './src/components/Home';
 
@@ -28,11 +27,6 @@ const App = () => {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
-              name="SystemConfig"
-              component={ServerConnectView}
-              options={{headerShown: false}}
-            />
             <Stack.Screen
               name="Login"
               component={LoginView}
