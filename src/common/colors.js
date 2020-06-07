@@ -6,6 +6,7 @@ const COLORS = {
   white: '#ffffff',
   danger: '#d9534f',
   success: '#5cb85c',
+  highlight: '#fbeded',
 };
 
 export default COLORS;

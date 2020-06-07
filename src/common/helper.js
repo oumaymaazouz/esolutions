@@ -56,10 +56,21 @@ const months = {
   11: 'December',
 };
 
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
 export const fullFormatDate = date => {
+  const dayName = days[new Date(date).getDay()];
   const day = new Date(date).getDate();
   const monthIndex = new Date(date).getMonth();
   const year = new Date(date).getFullYear();
-  return `${day} ${months[monthIndex]} ${year}`;
+  return `${dayName} on ${day} ${months[monthIndex]} ${year}`;
 };
 export {getDates, isPositiveNumber};

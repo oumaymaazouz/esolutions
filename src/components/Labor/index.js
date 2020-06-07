@@ -43,45 +43,36 @@ const LaborStack = props => {
         name="TransactionsList"
         component={ListTransacrtionsView}
         options={({route}) => ({
-          header: () => (
-            <Header style={{backgroundColor: COLORS.blue}}>
-              <Left>
-                <Button
-                  transparent
-                  onPress={() => props.navigation.toggleDrawer()}>
-                  <Icon type="Feather" name="menu" style={{fontSize: 34}} />
-                </Button>
-              </Left>
-              <Body style={styles.transListHeaderBody}>
-                <Text style={{fontSize: 16, color: COLORS.white}}>
-                  {`Period : ${route.params.month}`}
-                </Text>
-              </Body>
-              <Right style={styles.transInfos}>
-                <View>
-                  <View style={styles.transCountView}>
-                    <Icon
-                      type="FontAwesome"
-                      name="circle"
-                      style={styles.transCountApprovedIcon}
-                    />
-                    <Text style={styles.transCountText}>
-                      {route.params.approvedTrans}
-                    </Text>
-                  </View>
-                  <View style={styles.transCountView}>
-                    <Icon
-                      type="FontAwesome"
-                      name="circle"
-                      style={styles.transCountNotApprovedIcon}
-                    />
-                    <Text style={styles.transCountText}>
-                      {route.params.notApprovedTrans}
-                    </Text>
-                  </View>
+          headerTintColor: COLORS.white,
+          headerStyle: {backgroundColor: COLORS.blue},
+          headerTitle: () => (
+            <View style={styles.headerTitleComponent}>
+              <Text style={styles.screenTitleText}>
+                {`Period : ${route.params.month}`}
+              </Text>
+              <View>
+                <View style={styles.transCountView}>
+                  <Icon
+                    type="FontAwesome"
+                    name="circle"
+                    style={styles.transCountApprovedIcon}
+                  />
+                  <Text style={styles.transCountText}>
+                    {route.params.approvedTrans}
+                  </Text>
                 </View>
-              </Right>
-            </Header>
+                <View style={styles.transCountView}>
+                  <Icon
+                    type="FontAwesome"
+                    name="circle"
+                    style={styles.transCountNotApprovedIcon}
+                  />
+                  <Text style={styles.transCountText}>
+                    {route.params.notApprovedTrans}
+                  </Text>
+                </View>
+              </View>
+            </View>
           ),
         })}
       />
@@ -110,15 +101,12 @@ const LaborStack = props => {
 };
 
 const styles = StyleSheet.create({
-  transListHeaderBody: {
+  headerTitleComponent: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginLeft: 20,
   },
-  transInfos: {
-    flexDirection: 'column',
-    marginRight: 20,
-  },
+  screenTitleText: {fontSize: 16, color: COLORS.white},
   transCountText: {
     color: COLORS.white,
     fontSize: 14,

@@ -80,90 +80,105 @@ const LaborTransactionsView = props => {
 
   const getList = () => {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <View>
           <FlatList
             data={
               props.monthlyLaborTransactions &&
               props.monthlyLaborTransactions[props.route.params.month]
             }
-            renderItem={({item}) => (
-              <Card>
-                <CardItem header bordered style={styles.cardHeader}>
-                  <View style={styles.cardHeaderDesc}>
-                    <Text style={styles.cardHeaderWonum}>
-                      {`WO# : ${
-                        item.workordernt.wonum ? item.workordernt.wonum : '--'
-                      } - ${
-                        item.workordernt.description
-                          ? item.workordernt.description
+            renderItem={({item}) => {
+              const day = item['spi:startdateentered']
+                ? new Date(item['spi:startdateentered']).getDay()
+                : null;
+              const highlitCardStyle =
+                day === 5 || day === 6
+                  ? {backgroundColor: COLORS.highlight}
+                  : {};
+              console.log(day)    
+              return (
+                <Card>
+                  <CardItem
+                    header
+                    bordered
+                    style={[styles.cardHeader, highlitCardStyle]}>
+                    <View style={styles.cardHeaderDesc}>
+                      <Text style={styles.cardHeaderWonum}>
+                        {`WO# : ${
+                          item.workordernt.wonum ? item.workordernt.wonum : '--'
+                        } - ${
+                          item.workordernt.description
+                            ? item.workordernt.description
+                            : '--'
+                        }`}
+                      </Text>
+                    </View>
+                    <Button
+                      transparent
+                      style={styles.btnDelete}
+                      onPress={() =>
+                        deleteTransactions(item['spi:labtransid'])
+                      }>
+                      <Icon
+                        style={styles.btnDeleteIcon}
+                        type="AntDesign"
+                        name="delete"
+                      />
+                    </Button>
+                  </CardItem>
+                  <CardItem bordered style={highlitCardStyle}>
+                    <Body>
+                      <Text style={styles.cardDescItem}>{`Labor : ${
+                        item['spi:laborcode'] ? item['spi:laborcode'] : '--'
+                      } - ${props.profile.displayName}`}</Text>
+                      <Text style={styles.cardDescItem}>{`Date   : ${
+                        item['spi:startdateentered']
+                          ? fullFormatDate(item['spi:startdateentered'])
                           : '--'
-                      }`}
-                    </Text>
-                  </View>
-                  <Button
-                    transparent
-                    style={styles.btnDelete}
-                    onPress={() => deleteTransactions(item['spi:labtransid'])}>
-                    <Icon
-                      style={styles.btnDeleteIcon}
-                      type="AntDesign"
-                      name="delete"
-                    />
-                  </Button>
-                </CardItem>
-                <CardItem bordered>
-                  <Body>
-                    <Text style={styles.cardDescItem}>{`Labor : ${
-                      item['spi:laborcode'] ? item['spi:laborcode'] : '--'
-                    } - ${props.profile.displayName}`}</Text>
-                    <Text style={styles.cardDescItem}>{`Date   : ${
-                      item['spi:startdateentered']
-                        ? fullFormatDate(item['spi:startdateentered'])
-                        : '--'
-                    }`}</Text>
-                    <Text style={styles.cardDescItem}>{`Task   : ${
-                      item.workorder.taskid ? item.workorder.taskid : '--'
-                    } - ${
-                      item.workorder.description
-                        ? item.workorder.description
-                        : '--'
-                    }`}</Text>
+                      }`}</Text>
+                      <Text style={styles.cardDescItem}>{`Task   : ${
+                        item.workorder.taskid ? item.workorder.taskid : '--'
+                      } - ${
+                        item.workorder.description
+                          ? item.workorder.description
+                          : '--'
+                      }`}</Text>
 
-                    <Text style={styles.cardDescItem}>{`Craft   : ${
-                      item['spi:craft'] ? item['spi:craft'] : '--'
-                    }`}</Text>
-                  </Body>
-                </CardItem>
-                <CardItem footer bordered>
-                  <Left>
-                    <Text style={styles.regHrsText}>
-                      {`Reported hours: ${
-                        item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
-                      }`}
-                    </Text>
-                  </Left>
-                  <Right>
-                    <Text>
-                      {' '}
-                      {item['spi:genapprservreceipt'] ? (
-                        <Icon
-                          type="FontAwesome"
-                          name="circle"
-                          style={styles.greenCircle}
-                        />
-                      ) : (
-                        <Icon
-                          type="FontAwesome"
-                          name="circle"
-                          style={styles.redCircle}
-                        />
-                      )}
-                    </Text>
-                  </Right>
-                </CardItem>
-              </Card>
-            )}
+                      <Text style={styles.cardDescItem}>{`Craft   : ${
+                        item['spi:craft'] ? item['spi:craft'] : '--'
+                      }`}</Text>
+                    </Body>
+                  </CardItem>
+                  <CardItem footer bordered style={highlitCardStyle}>
+                    <Left>
+                      <Text style={styles.regHrsText}>
+                        {`Reported hours: ${
+                          item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
+                        }`}
+                      </Text>
+                    </Left>
+                    <Right>
+                      <Text>
+                        {' '}
+                        {item['spi:genapprservreceipt'] ? (
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={styles.greenCircle}
+                          />
+                        ) : (
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={styles.redCircle}
+                          />
+                        )}
+                      </Text>
+                    </Right>
+                  </CardItem>
+                </Card>
+              );
+            }}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
