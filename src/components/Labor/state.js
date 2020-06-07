@@ -38,7 +38,7 @@ export function $fetchLaborTransactions() {
     dispatch(fetchLaborTransactionsRequest());
     const {DOMAIN_NAME, maxauth, profile} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=laborcode,transdate,regularhrs,startdateentered,genapprservreceipt,craft,workorder.description,workorder.taskid,workordernt.description,workordernt.wonum&oslc.where=laborcode="${
+      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=labtransid,laborcode,transdate,regularhrs,startdateentered,genapprservreceipt,craft,workorder.description,workorder.taskid,workordernt.description,workordernt.wonum&oslc.where=laborcode="${
         profile.personid
       }"`,
       {
@@ -130,6 +130,57 @@ export function $AddBulkLaborTransactions(transaction) {
       })
       .catch(error => {
         dispatch(AddBulkLaborTransactionsFailure(error));
+        throw error;
+      });
+  };
+}
+
+const DELETE_TRANSACTION_REQUEST = 'DELETE_TRANSACTION_REQUEST';
+
+const deleteTransactionRequest = () => {
+  return {
+    type: DELETE_TRANSACTION_REQUEST,
+  };
+};
+
+const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS';
+
+const deleteTransactionSuccess = () => {
+  return {
+    type: DELETE_TRANSACTION_SUCCESS,
+  };
+};
+
+const DELETE_TRANSACTION_FAILURE = 'DELETE_TRANSACTION_FAILURE';
+
+const deleteTransactionFailure = error => {
+  return {
+    type: DELETE_TRANSACTION_FAILURE,
+    error,
+  };
+};
+export function $deleteTransaction(id) {
+  return function(dispatch, getState) {
+    dispatch(deleteTransactionRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+
+    return fetch(`${DOMAIN_NAME}/oslc/os/oslclabtrans/${id}`, {
+      method: 'DELETE',
+      headers: {
+        maxauth,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.text();
+      })
+      .then(() => {
+        dispatch(deleteTransactionSuccess());
+      })
+      .catch(error => {
+        dispatch(deleteTransactionFailure(error));
         throw error;
       });
   };

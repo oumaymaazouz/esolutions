@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Alert} from 'react-native';
 import {
   Container,
   Body,
@@ -12,15 +12,17 @@ import {
   Icon,
   Left,
   Right,
+  Button,
+  Toast,
 } from 'native-base';
 
 import Loader from '../Shared/Loader';
 
 import {getStore} from '../../store';
-import {$fetchLaborTransactions} from './state';
+import {$fetchLaborTransactions, $deleteTransaction} from './state';
 import COLORS from '../../common/colors';
 
-import {formatDate, fullFormatDate} from '../../common/helper';
+import {fullFormatDate} from '../../common/helper';
 
 const withStore = connect(state => ({
   profile: state.Auth.profile,
@@ -39,88 +41,128 @@ const LaborTransactionsView = props => {
     });
   }, [props]);
 
+  const deleteTransactions = id => {
+    const {dispatch} = getStore();
+    Alert.alert('Delete', `Do you really want to delete the task ${id}`, [
+      {
+        text: 'Delete',
+        onPress: () => {
+          dispatch($deleteTransaction(id))
+            .then(() => {
+              Toast.show({
+                text: `Task with id=${id}, is deleted successfully.`,
+                type: 'success',
+                duration: 6000,
+              });
+              props.navigation.setParams({
+                notApprovedTrans: props.route.params.notApprovedTrans - 1,
+              });
+              dispatch($fetchLaborTransactions()).catch(() =>
+                console.log(
+                  'ERROR IN FETCHING LABOR TRANSACTIONS FOR SELECTED MONTH',
+                ),
+              );
+            })
+            .catch(() =>
+              Toast.show({
+                text: `Task with id=${id}, could not be deleted.`,
+                type: 'danger',
+                duration: 6000,
+              }),
+            );
+        },
+      },
+      {
+        text: 'Cancel',
+      },
+    ]);
+  };
+
   const getList = () => {
     return (
       <View>
         <View>
-          {/* <Text style={styles.indicatedMonth}>{props.route.params.month}</Text> */}
           <FlatList
             data={
               props.monthlyLaborTransactions &&
               props.monthlyLaborTransactions[props.route.params.month]
             }
             renderItem={({item}) => (
-              <TouchableOpacity
-                onPress={() =>
-                  console.log('GO TO DETAILS VIEW, NOT YET IMPLEMENTED!')
-                }>
-                <Card>
-                  <CardItem header bordered style={styles.cardHeader}>
+              <Card>
+                <CardItem header bordered style={styles.cardHeader}>
+                  <View style={styles.cardHeaderDesc}>
                     <Text style={styles.cardHeaderWonum}>
                       {`WO# : ${
                         item.workordernt.wonum ? item.workordernt.wonum : '--'
-                      }`}
-                    </Text>
-                    <Text style={styles.cardHeaderWodesc}>
-                      {`WODESC : ${
+                      } - ${
                         item.workordernt.description
                           ? item.workordernt.description
                           : '--'
                       }`}
                     </Text>
-                  </CardItem>
-                  <CardItem bordered>
-                    <Body>
-                      <Text style={styles.item_body_item}>{`Labor : ${
-                        item['spi:laborcode'] ? item['spi:laborcode'] : '--'
-                      } - ${props.profile.displayName}`}</Text>
-                      <Text style={styles.item_body_item}>{`Date : ${
-                        item['spi:startdateentered']
-                          ? fullFormatDate(item['spi:startdateentered'])
-                          : '--'
-                      }`}</Text>
-                      <Text style={styles.item_body_item}>{`Task : ${
-                        item.workorder.taskid ? item.workorder.taskid : '--'
-                      }`}</Text>
-                      <Text style={styles.item_body_item}>{`Summery : ${
-                        item.workorder.description
-                          ? item.workorder.description
-                          : '--'
-                      }`}</Text>
-                      <Text style={styles.item_body_item}>{`Craft : ${
-                        item['spi:craft'] ? item['spi:craft'] : '--'
-                      }`}</Text>
-                    </Body>
-                  </CardItem>
-                  <CardItem footer bordered>
-                    <Left>
-                      <Text style={styles.item_footer_text}>
-                        {`Reported hours: ${
-                          item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
-                        }`}
-                      </Text>
-                    </Left>
-                    <Right>
-                      <Text>
-                        {' '}
-                        {item['spi:genapprservreceipt'] ? (
-                          <Icon
-                            type="FontAwesome"
-                            name="circle"
-                            style={{color: COLORS.success, fontSize: 30}}
-                          />
-                        ) : (
-                          <Icon
-                            type="FontAwesome"
-                            name="circle"
-                            style={{color: COLORS.danger, fontSize: 30}}
-                          />
-                        )}
-                      </Text>
-                    </Right>
-                  </CardItem>
-                </Card>
-              </TouchableOpacity>
+                  </View>
+                  <Button
+                    transparent
+                    style={styles.btnDelete}
+                    onPress={() => deleteTransactions(item['spi:labtransid'])}>
+                    <Icon
+                      style={styles.btnDeleteIcon}
+                      type="AntDesign"
+                      name="delete"
+                    />
+                  </Button>
+                </CardItem>
+                <CardItem bordered>
+                  <Body>
+                    <Text style={styles.cardDescItem}>{`Labor : ${
+                      item['spi:laborcode'] ? item['spi:laborcode'] : '--'
+                    } - ${props.profile.displayName}`}</Text>
+                    <Text style={styles.cardDescItem}>{`Date   : ${
+                      item['spi:startdateentered']
+                        ? fullFormatDate(item['spi:startdateentered'])
+                        : '--'
+                    }`}</Text>
+                    <Text style={styles.cardDescItem}>{`Task   : ${
+                      item.workorder.taskid ? item.workorder.taskid : '--'
+                    } - ${
+                      item.workorder.description
+                        ? item.workorder.description
+                        : '--'
+                    }`}</Text>
+
+                    <Text style={styles.cardDescItem}>{`Craft   : ${
+                      item['spi:craft'] ? item['spi:craft'] : '--'
+                    }`}</Text>
+                  </Body>
+                </CardItem>
+                <CardItem footer bordered>
+                  <Left>
+                    <Text style={styles.regHrsText}>
+                      {`Reported hours: ${
+                        item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
+                      }`}
+                    </Text>
+                  </Left>
+                  <Right>
+                    <Text>
+                      {' '}
+                      {item['spi:genapprservreceipt'] ? (
+                        <Icon
+                          type="FontAwesome"
+                          name="circle"
+                          style={styles.greenCircle}
+                        />
+                      ) : (
+                        <Icon
+                          type="FontAwesome"
+                          name="circle"
+                          style={styles.redCircle}
+                        />
+                      )}
+                    </Text>
+                  </Right>
+                </CardItem>
+              </Card>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -141,63 +183,46 @@ const LaborTransactionsView = props => {
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
         {!dataReady ? <Loader /> : getList()}
-        <Text>list</Text>
       </Content>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  cardHeader: {flexDirection: 'column', alignItems: 'flex-start'},
   indicatedMonth: {
     color: COLORS.darkGray,
     fontSize: 20,
     fontWeight: 'bold',
     padding: 20,
   },
-  headerTitle: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: 'bold',
+  btnDelete: {
+    height: 'auto',
   },
-  btnFilter: {
-    width: 'auto',
-    borderColor: COLORS.lightGray,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    alignSelf: 'flex-end',
-    marginRight: 10,
-    marginVertical: 10,
-  },
-  btnIcon: {
-    marginRight: 4,
-    fontSize: 18,
-    color: COLORS.darkGray,
-  },
+  btnDeleteIcon: {color: COLORS.danger, fontSize: 30, marginTop: 0},
+  cardHeaderDesc: {marginLeft: 14, marginRight: 7},
   cardHeaderWonum: {
     color: COLORS.darkGray,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  cardHeaderWodesc: {
-    color: COLORS.darkGray,
-    fontSize: 14,
-    fontWeight: 'bold',
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'flex-start',
   },
-  item_body_item: {
+
+  cardDescItem: {
     color: COLORS.darkGray,
     fontSize: 14,
     marginTop: 6,
   },
-  item_footer_badge: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-  },
-  item_footer_text: {
+  regHrsText: {
     fontSize: 14,
     color: COLORS.darkGray,
     fontWeight: 'bold',
   },
+  greenCircle: {color: COLORS.success, fontSize: 30},
+  redCircle: {color: COLORS.danger, fontSize: 30},
 });
 
 export default withStore(LaborTransactionsView);

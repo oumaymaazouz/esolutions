@@ -54,29 +54,31 @@ const LaborStack = props => {
               </Left>
               <Body style={styles.transListHeaderBody}>
                 <Text style={{fontSize: 16, color: COLORS.white}}>
-                  {`Transactions: ${route.params.month}`}
+                  {`Period : ${route.params.month}`}
                 </Text>
               </Body>
               <Right style={styles.transInfos}>
-                <View style={styles.transCountView}>
-                  <Icon
-                    type="FontAwesome"
-                    name="circle"
-                    style={styles.transCountApprovedIcon}
-                  />
-                  <Text style={styles.transCountText}>
-                    {route.params.approvedTrans}
-                  </Text>
-                </View>
-                <View style={styles.transCountView}>
-                  <Icon
-                    type="FontAwesome"
-                    name="circle"
-                    style={styles.transCountNotApprovedIcon}
-                  />
-                  <Text style={styles.transCountText}>
-                    {route.params.notApprovedTrans}
-                  </Text>
+                <View>
+                  <View style={styles.transCountView}>
+                    <Icon
+                      type="FontAwesome"
+                      name="circle"
+                      style={styles.transCountApprovedIcon}
+                    />
+                    <Text style={styles.transCountText}>
+                      {route.params.approvedTrans}
+                    </Text>
+                  </View>
+                  <View style={styles.transCountView}>
+                    <Icon
+                      type="FontAwesome"
+                      name="circle"
+                      style={styles.transCountNotApprovedIcon}
+                    />
+                    <Text style={styles.transCountText}>
+                      {route.params.notApprovedTrans}
+                    </Text>
+                  </View>
                 </View>
               </Right>
             </Header>
