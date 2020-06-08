@@ -1,17 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import {Modal, Text, StyleSheet, Dimensions} from 'react-native';
+import {
+  Modal,
+  Text,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {View, Button, ListItem} from 'native-base';
-import {FlatList} from 'react-native-gesture-handler';
 import Loader from '../Shared/Loader';
 import {screenWidth} from '../../common/helper';
 import COLORS from '../../common/colors';
 
 const withStore = connect(state => ({crafts: state.Labor.crafts}));
 
-const AddTransModal = props => {
+const AddCraftModal = props => {
+  const [craft, setCraft] = useState(null);
   return (
-    <Modal animationType="slide" visible={props.visible} transparent>
+    <Modal animationType="fade" visible={props.visible} transparent>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={{alignItems: 'flex-end'}}>
@@ -20,11 +27,24 @@ const AddTransModal = props => {
                 style={styles.flatlist}
                 data={props.crafts}
                 renderItem={({item}) => (
-                  <ListItem>
-                    <Text style={{color: COLORS.darkGray, fontWeight: 'bold'}}>
+                  <TouchableOpacity
+                    style={[
+                      styles.touchableItem,
+                      item['spi:craft'] === craft && {
+                        backgroundColor: COLORS.backgroundBlue,
+                      },
+                    ]}
+                    onPress={() => {
+                      setCraft(item['spi:craft']);
+                    }}>
+                    <Text
+                      style={[
+                        {color: COLORS.darkGray, fontWeight: 'bold'},
+                        item['spi:craft'] === craft && {color: COLORS.blue},
+                      ]}>
                       {item['spi:craft']}
                     </Text>
-                  </ListItem>
+                  </TouchableOpacity>
                 )}
               />
             ) : (
@@ -38,8 +58,12 @@ const AddTransModal = props => {
                 <Text style={styles.btnCancelText}>Cancel</Text>
               </Button>
               <Button
+                disabled={!craft}
                 style={styles.btnSubmit}
-                onPress={() => props.setSelectModalVisibility(false)}>
+                onPress={() => {
+                  props.setCarft(craft);
+                  props.setSelectModalVisibility(false);
+                }}>
                 <Text style={styles.btnSubmitText}>Confirm</Text>
               </Button>
             </View>
@@ -99,5 +123,10 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 14,
   },
+  touchableItem: {
+    padding: 14,
+    borderBottomColor: '#f4f4f4',
+    borderBottomWidth: 1,
+  },
 });
-export default withStore(AddTransModal);
+export default withStore(AddCraftModal);

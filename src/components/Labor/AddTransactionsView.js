@@ -20,7 +20,7 @@ import {getStore} from '../../store';
 import {formatDate, getDates, isPositiveNumber} from '../../common/helper';
 
 import {$previewTransactionsList, $fetchCrafts} from './state';
-import AddTransModal from './AddTransModal';
+import AddCraftModal from './AddCraftModal';
 
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
@@ -180,6 +180,7 @@ const AddTransactionsView = props => {
               placeholderTextColor={COLORS.lightGray}
               disabled
               style={styles.selectInput}
+              value={transaction.craft && transaction.craft}
             />
             <Button
               onPress={() => selectCraftAction()}
@@ -193,9 +194,15 @@ const AddTransactionsView = props => {
             </Button>
           </View>
         </Item>
-        <AddTransModal
+        <AddCraftModal
           visible={selectModalVisibility}
           setSelectModalVisibility={setSelectModalVisibility}
+          setCarft={value =>
+            setTransaction({
+              ...transaction,
+              craft: value,
+            })
+          }
         />
         {/* <Item style={styles.formitem}>
           <Switch
@@ -258,6 +265,9 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   selectInput: {
+    color: COLORS.darkGray,
+    fontSize: 14,
+    paddingLeft: 20,
     height: 40,
     borderColor: COLORS.lightGray,
     borderWidth: 1,
