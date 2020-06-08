@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 
 import {View, Text, FlatList, StyleSheet, Alert} from 'react-native';
@@ -41,12 +41,14 @@ const LaborTransactionsView = props => {
     });
   }, [props]);
 
+  const [processing, setProcessing] = useState(false);
   const deleteTransactions = id => {
     const {dispatch} = getStore();
     Alert.alert('Delete', `Do you really want to delete the task ${id}`, [
       {
         text: 'Delete',
         onPress: () => {
+          setProcessing(true);
           dispatch($deleteTransaction(id))
             .then(() => {
               Toast.show({
@@ -57,11 +59,13 @@ const LaborTransactionsView = props => {
               props.navigation.setParams({
                 notApprovedTrans: props.route.params.notApprovedTrans - 1,
               });
-              dispatch($fetchLaborTransactions()).catch(() =>
-                console.log(
-                  'ERROR IN FETCHING LABOR TRANSACTIONS FOR SELECTED MONTH',
-                ),
-              );
+              dispatch($fetchLaborTransactions())
+                .then(() => setProcessing(false))
+                .catch(() =>
+                  console.log(
+                    'ERROR IN FETCHING LABOR TRANSACTIONS FOR SELECTED MONTH',
+                  ),
+                );
             })
             .catch(() =>
               Toast.show({
@@ -77,9 +81,15 @@ const LaborTransactionsView = props => {
       },
     ]);
   };
-
+  console.log('props.route.params.month', props.route.params.month);
+  console.log('props.monthlyLaborTransactions', props.monthlyLaborTransactions);
+  console.log(
+    'props.monthlyLaborTransactions[props.route.params.month]',
+    props.monthlyLaborTransactions[props.route.params.month],
+  );
   const dataList =
     props.monthlyLaborTransactions &&
+    props.monthlyLaborTransactions[props.route.params.month] &&
     props.monthlyLaborTransactions[props.route.params.month].sort(
       (a, b) =>
         new Date(b['spi:startdateentered']) -
@@ -91,6 +101,7 @@ const LaborTransactionsView = props => {
         <View>
           <FlatList
             data={props.monthlyLaborTransactions && dataList}
+            refreshing={processing}
             renderItem={({item}) => {
               const day = item['spi:startdateentered']
                 ? new Date(item['spi:startdateentered']).getDay()
@@ -213,11 +224,10 @@ const LaborTransactionsView = props => {
     );
   };
 
-  const dataReady = !!props.laborTransactions;
   return (
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
-        {!dataReady ? <Loader /> : getList()}
+        {processing ? <Loader /> : getList()}
       </Content>
     </Container>
   );
