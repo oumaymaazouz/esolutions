@@ -4,11 +4,10 @@ import {
   Modal,
   Text,
   StyleSheet,
-  Dimensions,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {View, Button, ListItem} from 'native-base';
+import {View, Button} from 'native-base';
 import Loader from '../Shared/Loader';
 import {screenWidth} from '../../common/helper';
 import COLORS from '../../common/colors';
@@ -39,7 +38,7 @@ const AddCraftModal = props => {
                     }}>
                     <Text
                       style={[
-                        {color: COLORS.darkGray, fontWeight: 'bold'},
+                        styles.touchableItemText,
                         item['spi:craft'] === craft && {color: COLORS.blue},
                       ]}>
                       {item['spi:craft']}
@@ -50,7 +49,7 @@ const AddCraftModal = props => {
             ) : (
               <Loader />
             )}
-            <View style={{flexDirection: 'row', marginTop: 16}}>
+            <View style={styles.buttonsWrapper}>
               <Button
                 style={styles.btnCancel}
                 transparent
@@ -128,5 +127,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f4f4f4',
     borderBottomWidth: 1,
   },
+  touchableItemText: {color: COLORS.darkGray, fontWeight: 'bold'},
+  buttonsWrapper: {flexDirection: 'row', marginTop: 16},
 });
 export default withStore(AddCraftModal);
