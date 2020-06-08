@@ -5,11 +5,11 @@ const initialState = {
   laborTransactions: null,
   laborTransactionsPreview: null,
   crafts: null,
+  workorders: null,
 };
 
-// fetch labor transactions
+/** FETCH LABOR TRANSACTIONS */
 
-// 1-  Create action types + action creators of fetch labor transactions
 const FETCH_LABOR_TRANSACTIONS_REQUEST = 'FETCH_LABOR_TRANSACTIONS_REQUEST';
 
 const fetchLaborTransactionsRequest = () => {
@@ -68,7 +68,7 @@ export function $fetchLaborTransactions() {
 }
 
 /** FETCH CRAFTS */
-// http://ess-maximosupport.com/support/oslc/os/oslccraft?oslc.select=craft
+
 const FETCH_CRAFTS_REQUEST = 'FETCH_CRAFTS_REQUEST';
 
 const fetchCraftsRequest = () => {
@@ -98,13 +98,16 @@ export function $fetchCrafts() {
   return function(dispatch, getState) {
     dispatch(fetchCraftsRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
-    return fetch(`${DOMAIN_NAME}/oslc/os/oslccraft?oslc.select=craft`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        maxauth,
+    return fetch(
+      `${DOMAIN_NAME}/oslc/os/oslccraft?oslc.select=craft,description`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
       },
-    })
+    )
       .then(response => {
         if (!response.ok) {
           throw Error(response);
@@ -116,6 +119,63 @@ export function $fetchCrafts() {
       })
       .catch(error => {
         dispatch(fetchCraftsFailure(error));
+        throw error;
+      });
+  };
+}
+
+/** FETCH WORK ORDERS */
+
+const FETCH_WO_REQUEST = 'FETCH_WO_REQUEST';
+
+const fetchWORequest = () => {
+  return {
+    type: FETCH_WO_REQUEST,
+  };
+};
+
+const FETCH_WO_SUCCESS = 'FETCH_WO_SUCCESS';
+
+const fetchWOSuccess = data => {
+  return {
+    type: FETCH_WO_SUCCESS,
+    data,
+  };
+};
+
+const FETCH_WO_FAILURE = 'FETCH_WO_FAILURE';
+
+const fetchWOFailure = error => {
+  return {
+    type: FETCH_WO_FAILURE,
+    error,
+  };
+};
+export function $fetchWO() {
+  return function(dispatch, getState) {
+    dispatch(fetchWORequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    return fetch(
+      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=0&oslc.orderBy=-wonum`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
+      },
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.json();
+      })
+      .then(data => {
+        dispatch(fetchWOSuccess(data['rdfs:member']));
+      })
+      .catch(error => {
+        dispatch(fetchWOFailure(error));
         throw error;
       });
   };
@@ -288,6 +348,11 @@ export function laborReducer(state = initialState, action) {
       return {
         ...state,
         crafts: action.data,
+      };
+    case FETCH_WO_SUCCESS:
+      return {
+        ...state,
+        workorders: action.data,
       };
     case PREVIEW_TRANSACTIONS_LIST:
       return {

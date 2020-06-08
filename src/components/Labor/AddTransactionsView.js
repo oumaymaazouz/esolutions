@@ -19,13 +19,15 @@ import COLORS from '../../common/colors';
 import {getStore} from '../../store';
 import {formatDate, getDates, isPositiveNumber} from '../../common/helper';
 
-import {$previewTransactionsList, $fetchCrafts} from './state';
+import {$previewTransactionsList, $fetchCrafts, $fetchWO} from './state';
 import AddCraftModal from './AddCraftModal';
+import AddWOModal from './AddWOModal';
 
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
     regularhrs: 0.0,
     craft: null,
+    workorder: null,
     startdateentered: new Date().toISOString(),
   });
 
@@ -36,7 +38,7 @@ const AddTransactionsView = props => {
     const {regularhrs} = transaction;
     if (!isPositiveNumber(regularhrs)) {
       Toast.show({
-        text: 'Regular hours should be positive number',
+        text: 'Reported hours should be positive number',
         type: 'danger',
         duration: 6000,
       });
@@ -108,11 +110,21 @@ const AddTransactionsView = props => {
       console.log('ERROR FETCHING CRAFTS'),
     );
   };
+
+  const [selectWoModalVisibility, setSelectWoModalVisibility] = useState(false);
+  const selectWoAction = () => {
+    const {dispatch} = getStore();
+    setSelectWoModalVisibility(true);
+    dispatch($fetchWO()).catch(error =>
+      console.log('ERROR FETCHING WORKORDERS'),
+    );
+  };
+
   const getForm = () => {
     return (
       <Form>
         <Item fixedLabel style={styles.formitem}>
-          <Label style={styles.label}>Regular hours</Label>
+          <Label style={styles.label}>Reported hrs</Label>
           <Input
             keyboardType="numeric"
             style={styles.input}
@@ -204,6 +216,36 @@ const AddTransactionsView = props => {
             })
           }
         />
+
+        <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
+          <Label style={styles.label}>WO</Label>
+          <View style={styles.selectArea}>
+            <Label style={styles.selectInput}>
+              {transaction.workorder && transaction.workorder}
+            </Label>
+            <Button
+              onPress={() => selectWoAction()}
+              transparent
+              style={styles.selectBtn}>
+              <Icon
+                type="AntDesign"
+                name="right"
+                style={styles.selectBtnIcon}
+              />
+            </Button>
+          </View>
+        </Item>
+        <AddWOModal
+          visible={selectWoModalVisibility}
+          setSelectModalVisibility={setSelectWoModalVisibility}
+          setWorkorder={value =>
+            setTransaction({
+              ...transaction,
+              workorder: value,
+            })
+          }
+        />
+
         {/* <Item style={styles.formitem}>
           <Switch
             thumbColor={weekendIncluded ? COLORS.lightBlue : COLORS.lightGray}
@@ -262,17 +304,17 @@ const styles = StyleSheet.create({
     flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 30,
+    marginRight: 20,
   },
   selectInput: {
     color: COLORS.darkGray,
-    fontSize: 14,
-    paddingLeft: 20,
+    fontSize: 12,
     height: 40,
     borderColor: COLORS.lightGray,
     borderWidth: 1,
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
+    padding: 4,
   },
   selectBtn: {
     height: 40,
@@ -305,7 +347,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     marginTop: 20,
-    marginRight: 30,
+    marginRight: 20,
   },
   btnSubmitText: {
     color: COLORS.white,

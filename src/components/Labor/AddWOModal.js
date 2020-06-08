@@ -12,34 +12,36 @@ import Loader from '../Shared/Loader';
 import {screenWidth} from '../../common/helper';
 import COLORS from '../../common/colors';
 
-const withStore = connect(state => ({crafts: state.Labor.crafts}));
+const withStore = connect(state => ({workorders: state.Labor.workorders}));
 
-const AddCraftModal = props => {
-  const [craft, setCraft] = useState(null);
+const AddWOModal = props => {
+  const [workorder, setWorkorder] = useState(null);
   return (
     <Modal animationType="fade" visible={props.visible} transparent>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={{alignItems: 'flex-end'}}>
-            {props.crafts ? (
+            {props.workorders ? (
               <FlatList
                 style={styles.flatlist}
-                data={props.crafts}
+                data={props.workorders}
                 renderItem={({item}) => (
                   <TouchableOpacity
                     style={[
                       styles.touchableItem,
-                      item['spi:craft'] === craft && {
+                      item['spi:description'] === workorder && {
                         backgroundColor: COLORS.backgroundBlue,
                       },
                     ]}
                     onPress={() => {
-                      setCraft(item['spi:craft']);
+                      setWorkorder(item['spi:description']);
                     }}>
                     <Text
                       style={[
                         styles.touchableItemText,
-                        item['spi:craft'] === craft && {color: COLORS.blue},
+                        item['spi:description'] === workorder && {
+                          color: COLORS.blue,
+                        },
                       ]}>
                       {item['spi:description']}
                     </Text>
@@ -57,10 +59,10 @@ const AddCraftModal = props => {
                 <Text style={styles.btnCancelText}>Cancel</Text>
               </Button>
               <Button
-                disabled={!craft}
+                disabled={!workorder}
                 style={styles.btnSubmit}
                 onPress={() => {
-                  props.setCarft(craft);
+                  props.setWorkorder(workorder);
                   props.setSelectModalVisibility(false);
                 }}>
                 <Text style={styles.btnSubmitText}>Confirm</Text>
@@ -130,4 +132,4 @@ const styles = StyleSheet.create({
   touchableItemText: {color: COLORS.darkGray, fontWeight: 'bold'},
   buttonsWrapper: {flexDirection: 'row', marginTop: 16},
 });
-export default withStore(AddCraftModal);
+export default withStore(AddWOModal);
