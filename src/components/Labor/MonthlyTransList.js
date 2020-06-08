@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {connect} from 'react-redux';
 
-import {StyleSheet} from 'react-native';
+import {StyleSheet, RefreshControl} from 'react-native';
 import {
   Container,
   Content,
-  List,
   ListItem,
   Left,
   Text,
@@ -29,36 +28,43 @@ const withStore = connect(state => ({
 const MonthlyTransList = props => {
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-    const {dispatch} = getStore();
     const {navigation} = props;
     return navigation.addListener('focus', () => {
-      dispatch($fetchLaborTransactions()).catch(() =>
-        console.log('ERROR FETCHING LABOR TRANSACTIONS'),
-      );
+      getData();
     });
   }, [props]);
 
-  console.log(
-    props.monthlyLaborTransactions &&
-      Object.entries(props.monthlyLaborTransactions),
-  );
+  const getData = () => {
+    const {dispatch} = getStore();
+    return dispatch($fetchLaborTransactions()).catch(() =>
+      console.log('ERROR FETCHING LABOR TRANSACTIONS'),
+    );
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getData().then(() => setRefreshing(false));
+  }, []);
+
   return (
     <Container>
       <Content>
         {props.monthlyLaborTransactions ? (
           <FlatList
             // refreshing={!!props.monthlyLaborTransactions}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             data={
               props.monthlyLaborTransactions &&
               Object.entries(props.monthlyLaborTransactions)
             }
             renderItem={({item}) => {
-              console.log(item, '-----------------------');
               const notApprovedTrans = item[1].filter(
-                item => !item['spi:genapprservreceipt'],
+                i => !i['spi:genapprservreceipt'],
               ).length;
               const approvedTrans = item[1].filter(
-                item => !!item['spi:genapprservreceipt'],
+                i => !!i['spi:genapprservreceipt'],
               ).length;
               return (
                 <ListItem

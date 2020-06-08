@@ -12,7 +12,6 @@ import {
   Icon,
   Toast,
 } from 'native-base';
-import {useFocusEffect} from '@react-navigation/native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -97,16 +96,6 @@ const AddTransactionsView = props => {
     setDateEnd(new Date(dateEnd));
     setShowDateEnd(true);
   };
-
-  console.log('dateStart = ', dateStart);
-  console.log('dateEnd = ', dateEnd);
-  console.log('regularhrs = ', transaction.regularhrs);
-
-  useFocusEffect(() => {
-    console.log('In focus effect : dateStart = ', dateStart);
-    console.log('In focus effect : dateEnd = ', dateEnd);
-    console.log('In focus effect : regularhrs = ', transaction.regularhrs);
-  });
 
   const getForm = () => {
     return (

@@ -73,4 +73,5 @@ export const fullFormatDate = date => {
   const year = new Date(date).getFullYear();
   return `${dayName} ${day} ${months[monthIndex]} ${year}`;
 };
+
 export {getDates, isPositiveNumber};

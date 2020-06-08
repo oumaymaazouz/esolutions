@@ -81,12 +81,7 @@ const LaborTransactionsView = props => {
       },
     ]);
   };
-  console.log('props.route.params.month', props.route.params.month);
-  console.log('props.monthlyLaborTransactions', props.monthlyLaborTransactions);
-  console.log(
-    'props.monthlyLaborTransactions[props.route.params.month]',
-    props.monthlyLaborTransactions[props.route.params.month],
-  );
+
   const dataList =
     props.monthlyLaborTransactions &&
     props.monthlyLaborTransactions[props.route.params.month] &&
@@ -174,7 +169,7 @@ const LaborTransactionsView = props => {
 
                       <View style={styles.cardItemStyle}>
                         <Text style={styles.cardLabelItem}>{'Craft  :'}</Text>
-                        <Text style={styles.cardDescItem}>{`  ${
+                        <Text style={styles.cardDescItem}>{`${
                           item['spi:craft'] ? item['spi:craft'] : '--'
                         }`}</Text>
                       </View>
