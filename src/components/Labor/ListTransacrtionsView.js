@@ -105,7 +105,7 @@ const LaborTransactionsView = props => {
                     header
                     bordered
                     style={[styles.cardHeader, highlitCardStyle]}>
-                    <View style={styles.cardHeaderDesc}>
+                    <Left style={styles.cardHeaderDesc}>
                       <Text style={styles.cardHeaderWonum}>
                         {`WO# : ${
                           item.workordernt.wonum ? item.workordernt.wonum : '--'
@@ -115,19 +115,22 @@ const LaborTransactionsView = props => {
                             : '--'
                         }`}
                       </Text>
-                    </View>
-                    <Button
-                      transparent
-                      style={styles.btnDelete}
-                      onPress={() =>
-                        deleteTransactions(item['spi:labtransid'])
-                      }>
-                      <Icon
-                        style={styles.btnDeleteIcon}
-                        type="AntDesign"
-                        name="delete"
-                      />
-                    </Button>
+                    </Left>
+                    <Body style={styles.cardItemHeaderBody} />
+                    <Right style={styles.cardItemHeaderRight}>
+                      <Button
+                        transparent
+                        style={styles.btnDelete}
+                        onPress={() =>
+                          deleteTransactions(item['spi:labtransid'])
+                        }>
+                        <Icon
+                          style={styles.btnDeleteIcon}
+                          type="AntDesign"
+                          name="delete"
+                        />
+                      </Button>
+                    </Right>
                   </CardItem>
                   <CardItem bordered style={highlitCardStyle}>
                     <Body>
@@ -227,6 +230,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
+  cardItemHeaderBody: {flex: 0},
+  cardItemHeaderRight: {flex: 1},
   indicatedMonth: {
     color: COLORS.darkGray,
     fontSize: 20,
@@ -237,7 +242,7 @@ const styles = StyleSheet.create({
     height: 'auto',
   },
   btnDeleteIcon: {color: COLORS.danger, fontSize: 30, marginTop: 0},
-  cardHeaderDesc: {marginRight: 7},
+  cardHeaderDesc: { flex: 5},
   cardLabelItem: {
     marginRight: 14,
     fontWeight: 'bold',
