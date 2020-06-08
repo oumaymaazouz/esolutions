@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 
 import {StyleSheet} from 'react-native';
@@ -20,12 +20,14 @@ import {getStore} from '../../store';
 
 import {$fetchLaborTransactions} from './state';
 import Loader from '../Shared/Loader';
+import {FlatList} from 'react-native-gesture-handler';
 
 const withStore = connect(state => ({
   monthlyLaborTransactions: state.Labor.monthlyLaborTransactions,
 }));
 
 const MonthlyTransList = props => {
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     const {dispatch} = getStore();
     const {navigation} = props;
@@ -36,30 +38,40 @@ const MonthlyTransList = props => {
     });
   }, [props]);
 
+  console.log(
+    props.monthlyLaborTransactions &&
+      Object.entries(props.monthlyLaborTransactions),
+  );
   return (
     <Container>
       <Content>
-        <List>
-          {props.monthlyLaborTransactions ? (
-            Object.entries(props.monthlyLaborTransactions).map(arr => {
-              const notApprovedTrans = arr[1].filter(
+        {props.monthlyLaborTransactions ? (
+          <FlatList
+            // refreshing={!!props.monthlyLaborTransactions}
+            data={
+              props.monthlyLaborTransactions &&
+              Object.entries(props.monthlyLaborTransactions)
+            }
+            renderItem={({item}) => {
+              console.log(item, '-----------------------');
+              const notApprovedTrans = item[1].filter(
                 item => !item['spi:genapprservreceipt'],
               ).length;
-              const approvedTrans = arr[1].filter(
+              const approvedTrans = item[1].filter(
                 item => !!item['spi:genapprservreceipt'],
               ).length;
               return (
                 <ListItem
-                  key={arr[0]}
+                  key={item[0]}
                   onPress={() =>
                     props.navigation.navigate('TransactionsList', {
-                      month: arr[0],
+                      month: item[0],
                       approvedTrans,
                       notApprovedTrans,
                     })
                   }>
                   <Left>
-                    <Text style={styles.listItemText}>{arr[0]}</Text>
+                    <Text style={styles.listItemText}>{item[0]}</Text>
                   </Left>
                   <Body>
                     <View style={styles.transCountView}>
@@ -86,11 +98,12 @@ const MonthlyTransList = props => {
                   </Right>
                 </ListItem>
               );
-            })
-          ) : (
-            <Loader />
-          )}
-        </List>
+            }}
+            keyExtractor={(item, index) => index}
+          />
+        ) : (
+          <Loader />
+        )}
       </Content>
     </Container>
   );

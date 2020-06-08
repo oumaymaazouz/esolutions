@@ -1,6 +1,7 @@
 import {groupBy} from '../../common/helper';
 
 const initialState = {
+  monthlyLaborTransactions: null,
   laborTransactions: null,
   laborTransactionsPreview: null,
 };
