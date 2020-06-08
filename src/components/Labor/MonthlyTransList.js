@@ -77,7 +77,7 @@ const MonthlyTransList = props => {
                     })
                   }>
                   <Left>
-                    <Text style={styles.listItemText}>{item[0]}</Text>
+                    <Text style={styles.listItemDateText}>{item[0]}</Text>
                   </Left>
                   <Body>
                     <View style={styles.transCountView}>
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     color: COLORS.lightGray,
     fontSize: 14,
   },
+  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 14},
   transCountView: {flexDirection: 'row', alignItems: 'center'},
   transCountApprovedIcon: {
     color: COLORS.success,
