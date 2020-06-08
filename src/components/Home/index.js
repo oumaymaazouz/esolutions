@@ -18,7 +18,7 @@ const Home = () => {
       drawerContentOptions={{
         activeTintColor: '#1d6b5b',
       }}
-      initialRouteName="Profile"
+      initialRouteName="LaborTransactions"
       drawerPosition="left"
       drawerType="front">
       <Drawer.Screen

@@ -60,7 +60,10 @@ function $login(domain, username, password) {
         throw Error(responseLogin);
       }
       const payload = await responseLogin.json();
-      return dispatch(loginSuccess({...payload, username, maxauth}));
+
+      dispatch(loginSuccess({...payload, username, maxauth}));
+
+      await dispatch($fetchProfile(maxauth));
     } catch (error) {
       dispatch(loginFailure(error));
       throw error;
@@ -96,29 +99,29 @@ const fetchProfileFailure = error => {
 };
 //# fetchProfile function
 function $fetchProfile(maxauth) {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(fetchProfileRequest());
     const {DOMAIN_NAME} = getState().Auth;
-    return fetch(`${DOMAIN_NAME}/oslc/whoami`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        maxauth,
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response);
-        }
-        return response.json();
-      })
-      .then(data => {
-        dispatch(fetchProfileSuccess(data));
-      })
-      .catch(error => {
-        dispatch(fetchProfileFailure(error));
-        throw error;
+    try {
+      const response = await fetch(`${DOMAIN_NAME}/oslc/whoami`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
       });
+
+      if (!response.ok) {
+        throw Error(response);
+      }
+
+      const payload = await response.json();
+
+      return dispatch(fetchProfileSuccess(payload));
+    } catch (error) {
+      dispatch(fetchProfileFailure(error));
+      throw error;
+    }
   };
 }
 
