@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import {
   Container,
   Content,
@@ -19,11 +19,13 @@ import COLORS from '../../common/colors';
 import {getStore} from '../../store';
 import {formatDate, getDates, isPositiveNumber} from '../../common/helper';
 
-import {$previewTransactionsList} from './state';
+import {$previewTransactionsList, $fetchCrafts} from './state';
+import AddTransModal from './AddTransModal';
 
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
     regularhrs: 0.0,
+    craft: null,
     startdateentered: new Date().toISOString(),
   });
 
@@ -97,6 +99,15 @@ const AddTransactionsView = props => {
     setShowDateEnd(true);
   };
 
+  const [selectModalVisibility, setSelectModalVisibility] = useState(false);
+
+  const selectCraftAction = () => {
+    const {dispatch} = getStore();
+    setSelectModalVisibility(true);
+    dispatch($fetchCrafts()).catch(error =>
+      console.log('ERROR FETCHING CRAFTS'),
+    );
+  };
   const getForm = () => {
     return (
       <Form>
@@ -161,6 +172,31 @@ const AddTransactionsView = props => {
             />
           )}
         </Item>
+        <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
+          <Label style={styles.label}>Craft</Label>
+          <View style={styles.selectArea}>
+            <Input
+              placeholder="select craft"
+              placeholderTextColor={COLORS.lightGray}
+              disabled
+              style={styles.selectInput}
+            />
+            <Button
+              onPress={() => selectCraftAction()}
+              transparent
+              style={styles.selectBtn}>
+              <Icon
+                type="AntDesign"
+                name="right"
+                style={styles.selectBtnIcon}
+              />
+            </Button>
+          </View>
+        </Item>
+        <AddTransModal
+          visible={selectModalVisibility}
+          setSelectModalVisibility={setSelectModalVisibility}
+        />
         {/* <Item style={styles.formitem}>
           <Switch
             thumbColor={weekendIncluded ? COLORS.lightBlue : COLORS.lightGray}
@@ -200,6 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
+    flex: 1,
     color: COLORS.darkGray,
     fontSize: 14,
     fontWeight: 'bold',
@@ -212,6 +249,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     marginBottom: 12,
   },
+  formitemSelect: {flexDirection: 'row'},
+  selectArea: {
+    flexDirection: 'row',
+    flex: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 30,
+  },
+  selectInput: {
+    height: 40,
+    borderColor: COLORS.lightGray,
+    borderWidth: 1,
+    borderTopLeftRadius: 3,
+    borderBottomLeftRadius: 3,
+  },
+  selectBtn: {
+    height: 40,
+    borderColor: COLORS.lightGray,
+    borderWidth: 1,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
+  selectBtnIcon: {fontSize: 16, color: COLORS.lightGray},
   switchText: {
     color: COLORS.darkGray,
     fontSize: 14,

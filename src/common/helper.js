@@ -1,4 +1,5 @@
 import {Base64} from 'js-base64';
+import { Dimensions } from 'react-native';
 
 export const base64 = char => {
   return Base64.encode(char);
@@ -74,4 +75,5 @@ export const fullFormatDate = date => {
   return `${dayName} ${day} ${months[monthIndex]} ${year}`;
 };
 
+export const screenWidth = Math.round(Dimensions.get('window').width);
 export {getDates, isPositiveNumber};

@@ -100,7 +100,7 @@ const MonthlyTransList = props => {
                     </View>
                   </Body>
                   <Right>
-                    <Icon type="AntDesign" name="arrowright" />
+                    <Icon type="AntDesign" name="right" />
                   </Right>
                 </ListItem>
               );

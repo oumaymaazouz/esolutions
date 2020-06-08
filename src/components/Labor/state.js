@@ -4,6 +4,7 @@ const initialState = {
   monthlyLaborTransactions: null,
   laborTransactions: null,
   laborTransactionsPreview: null,
+  crafts: null,
 };
 
 // fetch labor transactions
@@ -66,6 +67,61 @@ export function $fetchLaborTransactions() {
   };
 }
 
+/** FETCH CRAFTS */
+// http://ess-maximosupport.com/support/oslc/os/oslccraft?oslc.select=craft
+const FETCH_CRAFTS_REQUEST = 'FETCH_CRAFTS_REQUEST';
+
+const fetchCraftsRequest = () => {
+  return {
+    type: FETCH_CRAFTS_REQUEST,
+  };
+};
+
+const FETCH_CRAFTS_SUCCESS = 'FETCH_CRAFTS_SUCCESS';
+
+const fetchCraftsSuccess = data => {
+  return {
+    type: FETCH_CRAFTS_SUCCESS,
+    data,
+  };
+};
+
+const FETCH_CRAFTS_FAILURE = 'FETCH_CRAFTS_FAILURE';
+
+const fetchCraftsFailure = error => {
+  return {
+    type: FETCH_CRAFTS_FAILURE,
+    error,
+  };
+};
+export function $fetchCrafts() {
+  return function(dispatch, getState) {
+    dispatch(fetchCraftsRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    return fetch(`${DOMAIN_NAME}/oslc/os/oslccraft?oslc.select=craft`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        maxauth,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.json();
+      })
+      .then(data => {
+        dispatch(fetchCraftsSuccess(data['rdfs:member']));
+      })
+      .catch(error => {
+        dispatch(fetchCraftsFailure(error));
+        throw error;
+      });
+  };
+}
+
+/** ADD TRANSACTIONS */
 const ADD_BULK_LABOR_TRANSACTIONS_REQUEST =
   'ADD_BULK_LABOR_TRANSACTIONS_REQUEST';
 
@@ -227,6 +283,11 @@ export function laborReducer(state = initialState, action) {
         ...state,
         laborTransactions,
         monthlyLaborTransactions: monthlyLabTransDesc,
+      };
+    case FETCH_CRAFTS_SUCCESS:
+      return {
+        ...state,
+        crafts: action.data,
       };
     case PREVIEW_TRANSACTIONS_LIST:
       return {
