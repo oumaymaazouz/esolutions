@@ -138,9 +138,7 @@ const LaborTransactionsView = props => {
                         <Text style={styles.cardLabelItem}>{`Date   : `}</Text>
                         <Text style={styles.cardDescItem}>{`${
                           item['spi:startdateentered']
-                            ? fullFormatDate(
-                                item['spi:startdateentered'],
-                              ).toUpperCase()
+                            ? fullFormatDate(item['spi:startdateentered'])
                             : '--'
                         }`}</Text>
                       </View>
@@ -227,8 +225,25 @@ const LaborTransactionsView = props => {
 
 const styles = StyleSheet.create({
   cardItemStyle: {
+    position: 'relative',
+    width: '100%',
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
+    marginTop: 6,
+  },
+  cardLabelItem: {
+    marginRight: 14,
+    fontWeight: 'bold',
+    color: COLORS.darkGray,
+    position: 'relative',
+    width: '15%',
+  },
+  cardDescItem: {
+    color: COLORS.darkGray,
+    fontSize: 14,
+    textTransform: 'uppercase',
+    position: 'relative',
+    width: '80%',
   },
   cardItemHeaderBody: {flex: 0},
   cardItemHeaderRight: {flex: 1},
@@ -242,12 +257,8 @@ const styles = StyleSheet.create({
     height: 'auto',
   },
   btnDeleteIcon: {color: COLORS.danger, fontSize: 30, marginTop: 0},
-  cardHeaderDesc: { flex: 5},
-  cardLabelItem: {
-    marginRight: 14,
-    fontWeight: 'bold',
-    color: COLORS.darkGray,
-  },
+  cardHeaderDesc: {flex: 5},
+
   cardHeaderWonum: {
     color: COLORS.darkGray,
     fontSize: 16,
@@ -259,11 +270,6 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
   },
 
-  cardDescItem: {
-    color: COLORS.darkGray,
-    fontSize: 14,
-    marginTop: 6,
-  },
   regHrsText: {
     fontSize: 14,
     color: COLORS.darkGray,
