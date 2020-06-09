@@ -8,6 +8,7 @@ const COLORS = {
   danger: '#d9534f',
   success: '#5cb85c',
   highlight: '#fbeded',
+  lightBrand: '#f4f4f4',
 };
 
 export default COLORS;

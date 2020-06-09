@@ -5,7 +5,8 @@ const initialState = {
   laborTransactions: null,
   laborTransactionsPreview: null,
   crafts: null,
-  workorders: null,
+  projects: null,
+  tasks: null,
 };
 
 /** FETCH LABOR TRANSACTIONS */
@@ -124,36 +125,36 @@ export function $fetchCrafts() {
   };
 }
 
-/** FETCH WORK ORDERS */
+/** FETCH Projects */
 
-const FETCH_WO_REQUEST = 'FETCH_WO_REQUEST';
+const FETCH_PROJECTS_REQUEST = 'FETCH_PROJECTS_REQUEST';
 
-const fetchWORequest = () => {
+const fetchProjectsRequest = () => {
   return {
-    type: FETCH_WO_REQUEST,
+    type: FETCH_PROJECTS_REQUEST,
   };
 };
 
-const FETCH_WO_SUCCESS = 'FETCH_WO_SUCCESS';
+const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
 
-const fetchWOSuccess = data => {
+const fetchProjectsSuccess = data => {
   return {
-    type: FETCH_WO_SUCCESS,
+    type: FETCH_PROJECTS_SUCCESS,
     data,
   };
 };
 
-const FETCH_WO_FAILURE = 'FETCH_WO_FAILURE';
+const FETCH_PROJECTS_FAILURE = 'FETCH_PROJECTS_FAILURE';
 
-const fetchWOFailure = error => {
+const fetchProjectsFailure = error => {
   return {
-    type: FETCH_WO_FAILURE,
+    type: FETCH_PROJECTS_FAILURE,
     error,
   };
 };
-export function $fetchWO() {
+export function $fetchProjects() {
   return function(dispatch, getState) {
-    dispatch(fetchWORequest());
+    dispatch(fetchProjectsRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
     return fetch(
       `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=0&oslc.orderBy=-wonum`,
@@ -172,10 +173,67 @@ export function $fetchWO() {
         return response.json();
       })
       .then(data => {
-        dispatch(fetchWOSuccess(data['rdfs:member']));
+        dispatch(fetchProjectsSuccess(data['rdfs:member']));
       })
       .catch(error => {
-        dispatch(fetchWOFailure(error));
+        dispatch(fetchProjectsFailure(error));
+        throw error;
+      });
+  };
+}
+
+/** FETCH TASKS */
+
+const FETCH_TASKS_REQUEST = 'FETCH_TASKS_REQUEST';
+
+const fetchTasksRequest = () => {
+  return {
+    type: FETCH_TASKS_REQUEST,
+  };
+};
+
+const FETCH_TASKS_SUCCESS = 'FETCH_TASKS_SUCCESS';
+
+const fetchTasksSuccess = data => {
+  return {
+    type: FETCH_TASKS_SUCCESS,
+    data,
+  };
+};
+
+const FETCH_TASKS_FAILURE = 'FETCH_TASKS_FAILURE';
+
+const fetchTasksFailure = error => {
+  return {
+    type: FETCH_TASKS_FAILURE,
+    error,
+  };
+};
+export function $fetchTasks(parent) {
+  return function(dispatch, getState) {
+    dispatch(fetchTasksRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    return fetch(
+      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=1+and+parent=${parent}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
+      },
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.json();
+      })
+      .then(data => {
+        dispatch(fetchTasksSuccess(data['rdfs:member']));
+      })
+      .catch(error => {
+        dispatch(fetchTasksFailure(error));
         throw error;
       });
   };
@@ -349,10 +407,15 @@ export function laborReducer(state = initialState, action) {
         ...state,
         crafts: action.data,
       };
-    case FETCH_WO_SUCCESS:
+    case FETCH_PROJECTS_SUCCESS:
       return {
         ...state,
-        workorders: action.data,
+        projects: action.data,
+      };
+    case FETCH_TASKS_SUCCESS:
+      return {
+        ...state,
+        tasks: action.data,
       };
     case PREVIEW_TRANSACTIONS_LIST:
       return {

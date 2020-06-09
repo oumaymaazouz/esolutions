@@ -118,18 +118,18 @@ const MonthlyTransList = props => {
 const styles = StyleSheet.create({
   listItemText: {
     color: COLORS.lightGray,
-    fontSize: 14,
+    fontSize: 18,
   },
-  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 14},
+  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 18},
   transCountView: {flexDirection: 'row', alignItems: 'center'},
   transCountApprovedIcon: {
     color: COLORS.success,
-    fontSize: 15,
+    fontSize: 18,
     marginRight: 10,
   },
   transCountNotApprovedIcon: {
     color: COLORS.danger,
-    fontSize: 15,
+    fontSize: 18,
     marginRight: 10,
   },
 });

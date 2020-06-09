@@ -30,8 +30,8 @@ const LaborStack = props => {
                 </Button>
               </Left>
               <Body>
-                <Text style={{fontSize: 14, color: COLORS.white}}>
-                  Monthly Transactions
+                <Text style={{fontSize: 20, color: COLORS.white}}>
+                  Summary list
                 </Text>
               </Body>
               <Right />

@@ -19,13 +19,19 @@ import COLORS from '../../common/colors';
 import {getStore} from '../../store';
 import {formatDate, getDates, isPositiveNumber} from '../../common/helper';
 
-import {$previewTransactionsList, $fetchCrafts, $fetchWO} from './state';
+import {
+  $previewTransactionsList,
+  $fetchCrafts,
+  $fetchProjects,
+  $fetchTasks,
+} from './state';
 import AddCraftModal from './AddCraftModal';
-import AddWOModal from './AddWOModal';
+import AddProjectModal from './AddProjectModal';
+import AddTaskModal from './AddTaskModal';
 
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
-    regularhrs: 0.0,
+    regularhrs: 8,
     craft: null,
     workorder: null,
     startdateentered: new Date().toISOString(),
@@ -111,14 +117,32 @@ const AddTransactionsView = props => {
     );
   };
 
-  const [selectWoModalVisibility, setSelectWoModalVisibility] = useState(false);
-  const selectWoAction = () => {
+  const [
+    selectProjectsModalVisibility,
+    setSelectProjectsModalVisibility,
+  ] = useState(false);
+  const selectProjectsAction = () => {
     const {dispatch} = getStore();
-    setSelectWoModalVisibility(true);
-    dispatch($fetchWO()).catch(error =>
-      console.log('ERROR FETCHING WORKORDERS'),
+    setSelectProjectsModalVisibility(true);
+    dispatch($fetchProjects()).catch(error =>
+      console.log('ERROR FETCHING PROJECTS'),
     );
   };
+
+  const [selectTaskModalVisibility, setSelectTaskModalVisibility] = useState(
+    false,
+  );
+  const selectTaskAction = () => {
+    const {dispatch} = getStore();
+    setSelectTaskModalVisibility(true);
+    dispatch($fetchTasks(transaction.workorder)).catch(error =>
+      console.log('ERROR FETCHING TASKS'),
+    );
+  };
+
+  const [projectDescription, setProjectDescription] = useState('');
+
+  const [taskDescription, setTaskDescription] = useState('');
 
   const getForm = () => {
     return (
@@ -218,13 +242,21 @@ const AddTransactionsView = props => {
         />
 
         <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
-          <Label style={styles.label}>WO</Label>
+          <Label style={styles.label}>Project</Label>
           <View style={styles.selectArea}>
-            <Label style={styles.selectInput}>
-              {transaction.workorder && transaction.workorder}
-            </Label>
+            {projectDescription ? (
+              <Label style={styles.selectInput}>{projectDescription}</Label>
+            ) : (
+              <Label
+                style={[
+                  styles.selectInput,
+                  {color: COLORS.lightGray, padding: 10},
+                ]}>
+                Select project
+              </Label>
+            )}
             <Button
-              onPress={() => selectWoAction()}
+              onPress={() => selectProjectsAction()}
               transparent
               style={styles.selectBtn}>
               <Icon
@@ -235,15 +267,61 @@ const AddTransactionsView = props => {
             </Button>
           </View>
         </Item>
-        <AddWOModal
-          visible={selectWoModalVisibility}
-          setSelectModalVisibility={setSelectWoModalVisibility}
-          setWorkorder={value =>
+        <AddProjectModal
+          visible={selectProjectsModalVisibility}
+          setSelectModalVisibility={setSelectProjectsModalVisibility}
+          setProject={project => {
+            setProjectDescription(project.description);
             setTransaction({
               ...transaction,
-              workorder: value,
-            })
-          }
+              workorder: project.wonum,
+            });
+          }}
+        />
+        <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
+          <Label style={styles.label}>Task</Label>
+          <View style={styles.selectArea}>
+            {taskDescription ? (
+              <Label style={styles.selectInput}>{taskDescription}</Label>
+            ) : (
+              <Label
+                style={[
+                  styles.selectInput,
+                  {color: COLORS.lightGray, padding: 10},
+                  !transaction.workorder && {
+                    backgroundColor: COLORS.lightBrand,
+                  },
+                ]}>
+                Select task
+              </Label>
+            )}
+
+            <Button
+              disabled={!transaction.workorder}
+              onPress={() => selectTaskAction()}
+              transparent
+              style={[
+                styles.selectBtn,
+                !transaction.workorder && {backgroundColor: COLORS.lightBrand},
+              ]}>
+              <Icon
+                type="AntDesign"
+                name="right"
+                style={styles.selectBtnIcon}
+              />
+            </Button>
+          </View>
+        </Item>
+        <AddTaskModal
+          visible={selectTaskModalVisibility}
+          setSelectModalVisibility={setSelectTaskModalVisibility}
+          setTask={value => {
+            setTaskDescription(value.description);
+            setTransaction({
+              ...transaction,
+              task: value.taskid,
+            });
+          }}
         />
 
         {/* <Item style={styles.formitem}>

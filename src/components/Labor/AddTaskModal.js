@@ -12,36 +12,41 @@ import Loader from '../Shared/Loader';
 import {screenWidth} from '../../common/helper';
 import COLORS from '../../common/colors';
 
-const withStore = connect(state => ({workorders: state.Labor.workorders}));
+const withStore = connect(state => ({tasks: state.Labor.tasks}));
 
-const AddWOModal = props => {
-  const [workorder, setWorkorder] = useState(null);
+const AddTaskModal = props => {
+  const [task, setTask] = useState(null);
   return (
     <Modal animationType="fade" visible={props.visible} transparent>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={{alignItems: 'flex-end'}}>
-            {props.workorders ? (
+            {props.tasks ? (
               <FlatList
                 style={styles.flatlist}
-                data={props.workorders}
+                data={props.tasks}
                 renderItem={({item}) => (
                   <TouchableOpacity
                     style={[
                       styles.touchableItem,
-                      item['spi:description'] === workorder && {
-                        backgroundColor: COLORS.backgroundBlue,
-                      },
+                      task &&
+                        item['spi:taskid'] === task.taskid && {
+                          backgroundColor: COLORS.backgroundBlue,
+                        },
                     ]}
                     onPress={() => {
-                      setWorkorder(item['spi:description']);
+                      setTask({
+                        taskid: item['spi:taskid'],
+                        description: item['spi:description'],
+                      });
                     }}>
                     <Text
                       style={[
                         styles.touchableItemText,
-                        item['spi:description'] === workorder && {
-                          color: COLORS.blue,
-                        },
+                        task &&
+                          item['spi:description'] === task.taskid && {
+                            color: COLORS.blue,
+                          },
                       ]}>
                       {item['spi:description']}
                     </Text>
@@ -59,10 +64,10 @@ const AddWOModal = props => {
                 <Text style={styles.btnCancelText}>Cancel</Text>
               </Button>
               <Button
-                disabled={!workorder}
+                disabled={!task}
                 style={styles.btnSubmit}
                 onPress={() => {
-                  props.setWorkorder(workorder);
+                  props.setTask(task);
                   props.setSelectModalVisibility(false);
                 }}>
                 <Text style={styles.btnSubmitText}>Confirm</Text>
@@ -132,4 +137,4 @@ const styles = StyleSheet.create({
   touchableItemText: {color: COLORS.darkGray, fontWeight: 'bold'},
   buttonsWrapper: {flexDirection: 'row', marginTop: 16},
 });
-export default withStore(AddWOModal);
+export default withStore(AddTaskModal);
