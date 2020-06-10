@@ -24,21 +24,27 @@ import {
   $fetchCrafts,
   $fetchProjects,
   $fetchTasks,
+  $AddBulkLaborTransactions,
 } from './state';
 import AddCraftModal from './AddCraftModal';
 import AddProjectModal from './AddProjectModal';
 import AddTaskModal from './AddTaskModal';
+import Loader from '../Shared/Loader';
 
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
     regularhrs: 8,
     craft: null,
-    workorder: null,
+    wonum: null,
+    taskid: null,
     startdateentered: new Date().toISOString(),
   });
 
-  // const [weekendIncluded, setWeekendIncluded] = useState(false);
+  const {regularhrs, craft, wonum, taskid} = transaction;
+  const disabledSubmit = !regularhrs || !craft || !wonum || !taskid;
 
+  // const [weekendIncluded, setWeekendIncluded] = useState(false);
+  const [proceedingAdd, setProceedingAdd] = useState(false);
   const submit = () => {
     // Validate inputs before submitting
     const {regularhrs} = transaction;
@@ -55,6 +61,7 @@ const AddTransactionsView = props => {
         duration: 6000,
       });
     } else {
+      setProceedingAdd(true);
       let data = [];
       const dates = getDates(new Date(dateStart), new Date(dateEnd));
       dates.map(date => {
@@ -66,8 +73,15 @@ const AddTransactionsView = props => {
       });
 
       const {dispatch} = getStore();
-      dispatch($previewTransactionsList(data));
-      props.navigation.navigate('PreviewAddTransactions');
+
+      Promise.all(
+        data.map(async item => {
+          await dispatch($AddBulkLaborTransactions(item));
+        }),
+      ).then(() => {
+        setProceedingAdd(false);
+        props.navigation.navigate('MonthlyTransList');
+      });
     }
   };
 
@@ -135,7 +149,7 @@ const AddTransactionsView = props => {
   const selectTaskAction = () => {
     const {dispatch} = getStore();
     setSelectTaskModalVisibility(true);
-    dispatch($fetchTasks(transaction.workorder)).catch(error =>
+    dispatch($fetchTasks(transaction.wonum)).catch(error =>
       console.log('ERROR FETCHING TASKS'),
     );
   };
@@ -153,6 +167,9 @@ const AddTransactionsView = props => {
             keyboardType="numeric"
             style={styles.input}
             placeholder="0.0"
+            defaultValue={
+              transaction.regularhrs && transaction.regularhrs.toString()
+            }
             placeholderTextColor={COLORS.lightGray}
             onChangeText={value =>
               setTransaction({
@@ -274,7 +291,7 @@ const AddTransactionsView = props => {
             setProjectDescription(project.description);
             setTransaction({
               ...transaction,
-              workorder: project.wonum,
+              wonum: project.wonum,
             });
           }}
         />
@@ -288,7 +305,7 @@ const AddTransactionsView = props => {
                 style={[
                   styles.selectInput,
                   {color: COLORS.lightGray, padding: 10},
-                  !transaction.workorder && {
+                  !transaction.wonum && {
                     backgroundColor: COLORS.lightBrand,
                   },
                 ]}>
@@ -297,12 +314,12 @@ const AddTransactionsView = props => {
             )}
 
             <Button
-              disabled={!transaction.workorder}
+              disabled={!transaction.wonum}
               onPress={() => selectTaskAction()}
               transparent
               style={[
                 styles.selectBtn,
-                !transaction.workorder && {backgroundColor: COLORS.lightBrand},
+                !transaction.wonum && {backgroundColor: COLORS.lightBrand},
               ]}>
               <Icon
                 type="AntDesign"
@@ -316,10 +333,11 @@ const AddTransactionsView = props => {
           visible={selectTaskModalVisibility}
           setSelectModalVisibility={setSelectTaskModalVisibility}
           setTask={value => {
+            console.log(value);
             setTaskDescription(value.description);
             setTransaction({
               ...transaction,
-              task: value.taskid,
+              taskid: value.taskid,
             });
           }}
         />
@@ -337,7 +355,10 @@ const AddTransactionsView = props => {
           </Text>
         </Item> */}
         <Item style={[styles.formitem, styles.btnFormItem]}>
-          <Button style={styles.btnSubmit} onPress={() => submit()}>
+          <Button
+            disabled={disabledSubmit}
+            style={styles.btnSubmit}
+            onPress={() => submit()}>
             <Text style={styles.btnSubmitText}>Submit</Text>
           </Button>
         </Item>
@@ -348,7 +369,9 @@ const AddTransactionsView = props => {
   return (
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
-        <Card style={styles.card}>{getForm()}</Card>
+        <Card style={styles.card}>
+          {proceedingAdd ? <Loader /> : getForm()}
+        </Card>
       </Content>
     </Container>
   );

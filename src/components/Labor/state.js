@@ -157,7 +157,7 @@ export function $fetchProjects() {
     dispatch(fetchProjectsRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=0&oslc.orderBy=-wonum`,
+      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=0+and+status="appr"&oslc.orderBy=-wonum`,
       {
         method: 'GET',
         headers: {
@@ -214,7 +214,7 @@ export function $fetchTasks(parent) {
     dispatch(fetchTasksRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=wonum,description&oslc.where=istask=1+and+parent=${parent}`,
+      `${DOMAIN_NAME}/oslc/os/oslcwo?oslc.select=taskid,description&oslc.where=istask=1+and+parent=${parent}`,
       {
         method: 'GET',
         headers: {
@@ -270,12 +270,11 @@ const AddBulkLaborTransactionsFailure = error => {
 export function $AddBulkLaborTransactions(transaction) {
   return function(dispatch, getState) {
     dispatch(AddBulkLaborTransactionsRequest());
-    const {DOMAIN_NAME, maxauth, username} = getState().Auth;
+    const {DOMAIN_NAME, maxauth, profile} = getState().Auth;
 
     transaction = {
-      siteid: 'BEDFORD',
-      laborcode: username,
-      gldebitacct: '6220-300-350',
+      siteid: profile.defaultSite,
+      laborcode: profile.personid,
       ...transaction,
     };
 
@@ -285,6 +284,7 @@ export function $AddBulkLaborTransactions(transaction) {
     ]);
 
     const payload = JSON.stringify(Object.fromEntries(array));
+
     return fetch(`${DOMAIN_NAME}/oslc/os/oslclabtrans`, {
       method: 'POST',
       headers: {

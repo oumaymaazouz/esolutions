@@ -12,6 +12,7 @@ import {
   Icon,
   Body,
   View,
+  Fab,
 } from 'native-base';
 
 import COLORS from '../../common/colors';
@@ -48,68 +49,84 @@ const MonthlyTransList = props => {
 
   return (
     <Container>
-      <Content>
-        {props.monthlyLaborTransactions ? (
-          <FlatList
-            // refreshing={!!props.monthlyLaborTransactions}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            data={
-              props.monthlyLaborTransactions &&
-              Object.entries(props.monthlyLaborTransactions)
-            }
-            renderItem={({item}) => {
-              const notApprovedTrans = item[1].filter(
-                i => !i['spi:genapprservreceipt'],
-              ).length;
-              const approvedTrans = item[1].filter(
-                i => !!i['spi:genapprservreceipt'],
-              ).length;
-              return (
-                <ListItem
-                  key={item[0]}
-                  onPress={() =>
-                    props.navigation.navigate('TransactionsList', {
-                      month: item[0],
-                      approvedTrans,
-                      notApprovedTrans,
-                    })
-                  }>
-                  <Left>
-                    <Text style={styles.listItemDateText}>{item[0]}</Text>
-                  </Left>
-                  <Body>
-                    <View style={styles.transCountView}>
-                      <Icon
-                        type="FontAwesome"
-                        name="circle"
-                        style={styles.transCountApprovedIcon}
-                      />
-                      <Text style={styles.listItemText}>{approvedTrans}</Text>
-                    </View>
-                    <View style={styles.transCountView}>
-                      <Icon
-                        type="FontAwesome"
-                        name="circle"
-                        style={styles.transCountNotApprovedIcon}
-                      />
-                      <Text style={styles.listItemText}>
-                        {notApprovedTrans}
-                      </Text>
-                    </View>
-                  </Body>
-                  <Right>
-                    <Icon type="AntDesign" name="right" />
-                  </Right>
-                </ListItem>
-              );
-            }}
-            keyExtractor={(item, index) => index}
-          />
-        ) : (
-          <Loader />
-        )}
+      <Content contentContainerStyle={{flex: 1}}>
+        <View style={{flex: 1}}>
+          <View>
+            {props.monthlyLaborTransactions ? (
+              <FlatList
+                // refreshing={!!props.monthlyLaborTransactions}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+                data={
+                  props.monthlyLaborTransactions &&
+                  Object.entries(props.monthlyLaborTransactions)
+                }
+                renderItem={({item}) => {
+                  const notApprovedTrans = item[1].filter(
+                    i => !i['spi:genapprservreceipt'],
+                  ).length;
+                  const approvedTrans = item[1].filter(
+                    i => !!i['spi:genapprservreceipt'],
+                  ).length;
+                  return (
+                    <ListItem
+                      key={item[0]}
+                      onPress={() =>
+                        props.navigation.navigate('TransactionsList', {
+                          month: item[0],
+                          approvedTrans,
+                          notApprovedTrans,
+                        })
+                      }>
+                      <Left>
+                        <Text style={styles.listItemDateText}>{item[0]}</Text>
+                      </Left>
+                      <Body>
+                        <View style={styles.transCountView}>
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={styles.transCountApprovedIcon}
+                          />
+                          <Text style={styles.listItemText}>
+                            {approvedTrans}
+                          </Text>
+                        </View>
+                        <View style={styles.transCountView}>
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={styles.transCountNotApprovedIcon}
+                          />
+                          <Text style={styles.listItemText}>
+                            {notApprovedTrans}
+                          </Text>
+                        </View>
+                      </Body>
+                      <Right>
+                        <Icon type="AntDesign" name="right" />
+                      </Right>
+                    </ListItem>
+                  );
+                }}
+                keyExtractor={(item, index) => index}
+              />
+            ) : (
+              <Loader />
+            )}
+          </View>
+
+          <Fab
+            style={{backgroundColor: COLORS.blue}}
+            position="bottomRight"
+            onPress={() => props.navigation.push('AddTransactions')}>
+            <Icon type="Feather" name="plus" />
+          </Fab>
+        </View>
       </Content>
     </Container>
   );
