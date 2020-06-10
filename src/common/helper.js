@@ -1,5 +1,5 @@
 import {Base64} from 'js-base64';
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 
 export const base64 = char => {
   return Base64.encode(char);
@@ -7,8 +7,9 @@ export const base64 = char => {
 
 export const formatDate = date => {
   const formattedDate = new Date(date);
-  return `${formattedDate.getDate()}/${formattedDate.getMonth() +
-    1}/${formattedDate.getFullYear()}`;
+  return `${('0' + formattedDate.getDate()).slice(
+    -2,
+  )}/${formattedDate.getMonth() + 1}/${formattedDate.getFullYear()}`;
 };
 
 // get array of dates between 2 dates

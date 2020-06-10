@@ -185,7 +185,11 @@ const AddTransactionsView = props => {
             transparent
             style={styles.btnCalendar}
             onPress={showDateStartpicker}>
-            <Icon type="Feather" name="calendar" style={styles.iconCalendar} />
+            <Icon
+              type="Feather"
+              name="calendar"
+              style={[styles.iconCalendar, {marginLeft: 0}]}
+            />
             <Text style={styles.dateValue}>
               {dateStart ? formatDate(dateStart) : 'dd/mm/yyyy'}
             </Text>
@@ -208,7 +212,11 @@ const AddTransactionsView = props => {
             transparent
             style={styles.btnCalendar}
             onPress={showDateEndpicker}>
-            <Icon type="Feather" name="calendar" style={styles.iconCalendar} />
+            <Icon
+              type="Feather"
+              name="calendar"
+              style={[styles.iconCalendar, {marginLeft: 0}]}
+            />
             <Text style={styles.dateValue}>
               {dateEnd ? formatDate(dateEnd) : 'dd/mm/yyyy'}
             </Text>
