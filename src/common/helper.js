@@ -26,6 +26,28 @@ function getDates(startDate, endDate) {
   return dates;
 }
 
+const isWeekend = date => {
+  const d = new Date(date);
+  return d.getDay() === 5 || d.getDay() === 6;
+};
+
+// get array of dates between 2 dates excluding weekends
+export const getDatesExcludingWeekEnds = (startDate, endDate) => {
+  let dates = [];
+
+  let currentDate = startDate;
+
+  while (currentDate <= endDate) {
+    if (!isWeekend(currentDate)) {
+      dates.push(new Date(currentDate));
+    }
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dates;
+};
+
 function isPositiveNumber(n) {
   return Number(n) === n && Number(n) > 0;
 }

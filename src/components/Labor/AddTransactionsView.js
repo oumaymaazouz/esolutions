@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet, Platform, Switch} from 'react-native';
 import {
   Container,
   Content,
@@ -17,10 +17,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import COLORS from '../../common/colors';
 import {getStore} from '../../store';
-import {formatDate, getDates, isPositiveNumber} from '../../common/helper';
+import {
+  formatDate,
+  getDates,
+  isPositiveNumber,
+  getDatesExcludingWeekEnds,
+} from '../../common/helper';
 
 import {
-  $previewTransactionsList,
   $fetchCrafts,
   $fetchProjects,
   $fetchTasks,
@@ -43,7 +47,7 @@ const AddTransactionsView = props => {
   const {regularhrs, craft, wonum, taskid} = transaction;
   const disabledSubmit = !regularhrs || !craft || !wonum || !taskid;
 
-  // const [weekendIncluded, setWeekendIncluded] = useState(false);
+  const [weekendIncluded, setWeekendIncluded] = useState(false);
   const [proceedingAdd, setProceedingAdd] = useState(false);
   const submit = () => {
     // Validate inputs before submitting
@@ -63,7 +67,16 @@ const AddTransactionsView = props => {
     } else {
       setProceedingAdd(true);
       let data = [];
-      const dates = getDates(new Date(dateStart), new Date(dateEnd));
+      let dates;
+      if (!weekendIncluded) {
+        dates = getDatesExcludingWeekEnds(
+          new Date(dateStart),
+          new Date(dateEnd),
+        );
+      } else {
+        dates = getDates(new Date(dateStart), new Date(dateEnd));
+      }
+
       dates.map(date => {
         const startdateentered = new Date(date);
         data.push({
@@ -350,7 +363,7 @@ const AddTransactionsView = props => {
           }}
         />
 
-        {/* <Item style={styles.formitem}>
+        <Item style={styles.formitem}>
           <Switch
             thumbColor={weekendIncluded ? COLORS.lightBlue : COLORS.lightGray}
             trackColor={{true: COLORS.lightBlue, false: COLORS.lightGray}}
@@ -358,10 +371,8 @@ const AddTransactionsView = props => {
             onValueChange={() => setWeekendIncluded(!weekendIncluded)}
           />
 
-          <Text style={styles.switchText}>
-            {weekendIncluded ? 'Week-end included.' : 'Week-end excluded.'}
-          </Text>
-        </Item> */}
+          <Text style={styles.switchText}>Is weekend included ?</Text>
+        </Item>
         <Item style={[styles.formitem, styles.btnFormItem]}>
           <Button
             disabled={disabledSubmit}

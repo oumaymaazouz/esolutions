@@ -44,7 +44,7 @@ const LoginView = props => {
           type: 'danger',
           duration: 6000,
         });
-      });
+      })
   };
 
   return (
