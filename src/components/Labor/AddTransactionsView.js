@@ -86,15 +86,15 @@ const AddTransactionsView = props => {
   };
 
   const today = new Date();
-  let tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
+  let yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
 
   /**
    * @description : handle start date picker
    */
 
   const [showDateStart, setShowDateStart] = useState(false);
-  const [dateStart, setDateStart] = useState(new Date(today));
+  const [dateStart, setDateStart] = useState(new Date(yesterday));
   const onChangeDateStart = (event, selectedDate) => {
     const currentDate = selectedDate || dateStart;
     setShowDateStart(Platform.OS === 'ios');
@@ -110,7 +110,7 @@ const AddTransactionsView = props => {
    */
 
   const [showDateEnd, setShowDateEnd] = useState(false);
-  const [dateEnd, setDateEnd] = useState(new Date(tomorrow));
+  const [dateEnd, setDateEnd] = useState(new Date(today));
   const onChangeDateEnd = (event, selectedDate) => {
     const currentDate = selectedDate || dateEnd;
     setShowDateEnd(Platform.OS === 'ios');
@@ -162,7 +162,7 @@ const AddTransactionsView = props => {
     return (
       <Form>
         <Item fixedLabel style={styles.formitem}>
-          <Label style={styles.label}>Reported hrs</Label>
+          <Label style={styles.label}>Reported hrs :</Label>
           <Input
             keyboardType="numeric"
             style={styles.input}
@@ -180,7 +180,7 @@ const AddTransactionsView = props => {
           />
         </Item>
         <Item fixedLabel style={styles.formitem}>
-          <Label style={styles.label}>Start date</Label>
+          <Label style={styles.label}>Start date :</Label>
           <Button
             transparent
             style={styles.btnCalendar}
@@ -203,7 +203,7 @@ const AddTransactionsView = props => {
           )}
         </Item>
         <Item fixedLabel style={styles.formitem}>
-          <Label style={styles.label}>End date</Label>
+          <Label style={styles.label}>End date :</Label>
           <Button
             transparent
             style={styles.btnCalendar}
@@ -226,7 +226,7 @@ const AddTransactionsView = props => {
           )}
         </Item>
         <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
-          <Label style={styles.label}>Craft</Label>
+          <Label style={styles.label}>Craft :</Label>
           <View style={styles.selectArea}>
             <Input
               placeholder="select craft"
@@ -259,7 +259,7 @@ const AddTransactionsView = props => {
         />
 
         <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
-          <Label style={styles.label}>Project</Label>
+          <Label style={styles.label}>Project :</Label>
           <View style={styles.selectArea}>
             {projectDescription ? (
               <Label style={styles.selectInput}>{projectDescription}</Label>
@@ -296,7 +296,7 @@ const AddTransactionsView = props => {
           }}
         />
         <Item fixedLabel style={[styles.formitem, styles.formitemSelect]}>
-          <Label style={styles.label}>Task</Label>
+          <Label style={styles.label}>Task :</Label>
           <View style={styles.selectArea}>
             {taskDescription ? (
               <Label style={styles.selectInput}>{taskDescription}</Label>

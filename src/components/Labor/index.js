@@ -79,7 +79,7 @@ const LaborStack = props => {
         component={AddTransactionsView}
         options={{
           headerTitle: 'Bulk add transactions',
-          headerTitleStyle: {fontSize: 16},
+          headerTitleStyle: {fontSize: 20},
           headerStyle: {backgroundColor: COLORS.blue},
           headerTintColor: COLORS.white,
         }}
@@ -89,7 +89,7 @@ const LaborStack = props => {
         component={PreviewAddTransactionsView}
         options={{
           headerTitle: 'Preview transactions',
-          headerTitleStyle: {fontSize: 16},
+          headerTitleStyle: {fontSize: 20},
           headerStyle: {backgroundColor: COLORS.blue},
           headerTintColor: COLORS.white,
         }}
@@ -104,20 +104,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  screenTitleText: {fontSize: 16, color: COLORS.white},
+  screenTitleText: {fontSize: 20, color: COLORS.white},
   transCountText: {
     color: COLORS.white,
-    fontSize: 14,
+    fontSize: 18,
   },
   transCountView: {flexDirection: 'row', alignItems: 'center'},
   transCountApprovedIcon: {
     color: COLORS.success,
-    fontSize: 15,
+    fontSize: 20,
     marginRight: 10,
   },
   transCountNotApprovedIcon: {
     color: COLORS.danger,
-    fontSize: 15,
+    fontSize: 20,
     marginRight: 10,
   },
 });

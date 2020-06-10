@@ -98,9 +98,11 @@ const fetchCraftsFailure = error => {
 export function $fetchCrafts() {
   return function(dispatch, getState) {
     dispatch(fetchCraftsRequest());
-    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    const {DOMAIN_NAME, maxauth, profile} = getState().Auth;
     return fetch(
-      `${DOMAIN_NAME}/oslc/os/oslccraft?oslc.select=craft,description`,
+      `${DOMAIN_NAME}/oslc/os/oslccraft?oslc.select=craft,description&oslc.where=laborcraftrate.laborcode=${
+        profile.personid
+      }`,
       {
         method: 'GET',
         headers: {

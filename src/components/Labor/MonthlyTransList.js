@@ -113,7 +113,7 @@ const MonthlyTransList = props => {
                     </ListItem>
                   );
                 }}
-                keyExtractor={(item, index) => index}
+                keyExtractor={(item, index) => index.toString()}
               />
             ) : (
               <Loader />
