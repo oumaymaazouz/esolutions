@@ -80,6 +80,7 @@ const MonthlyTransList = props => {
                           month: item[0],
                           approvedTrans,
                           notApprovedTrans,
+                          itemsToDelete: [],
                         })
                       }>
                       <Left>

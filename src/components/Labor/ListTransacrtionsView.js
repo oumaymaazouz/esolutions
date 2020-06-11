@@ -44,10 +44,6 @@ const LaborTransactionsView = props => {
     });
   }, [props]);
 
-  useEffect(() => {
-    console.log('+++++++++++++++++++++', itemsToDelete);
-  }, [itemsToDelete]);
-
   const [processing, setProcessing] = useState(false);
 
   const dataList =
@@ -62,12 +58,26 @@ const LaborTransactionsView = props => {
   const [itemsToDelete, setItemsToDelete] = useState([]);
 
   const setItemsToDeleteAction = item => {
-    setItemsToDelete([...itemsToDelete, item['spi:labtransid']]);
-
-    props.navigation.setParams({
-      itemsToDelete: [...itemsToDelete, item['spi:labtransid']],
-    });
+    let updatedItems;
+    if (itemsToDelete.includes(item['spi:labtransid'])) {
+      const itemIndex = itemsToDelete.indexOf(item['spi:labtransid']);
+      updatedItems = itemsToDelete
+        .slice(0, itemIndex)
+        .concat(itemsToDelete.slice(itemIndex + 1, itemsToDelete.length));
+      setItemsToDelete(updatedItems);
+      console.log('**********************', itemsToDelete);
+      props.navigation.setParams({
+        itemsToDelete: updatedItems,
+      });
+    } else {
+      updatedItems = [...itemsToDelete, item['spi:labtransid']];
+      setItemsToDelete(updatedItems);
+      props.navigation.setParams({
+        itemsToDelete: updatedItems,
+      });
+    }
   };
+  console.log(itemsToDelete, '+++++++++++++++++++++');
   const getList = () => {
     return (
       <View style={{flex: 1}}>
