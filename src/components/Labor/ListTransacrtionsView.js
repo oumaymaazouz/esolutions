@@ -44,46 +44,11 @@ const LaborTransactionsView = props => {
     });
   }, [props]);
 
+  useEffect(() => {
+    console.log('+++++++++++++++++++++', itemsToDelete);
+  }, [itemsToDelete]);
+
   const [processing, setProcessing] = useState(false);
-  const deleteTransactions = id => {
-    const {dispatch} = getStore();
-    Alert.alert('Delete', `Do you really want to delete the task ${id}`, [
-      {
-        text: 'Delete',
-        onPress: () => {
-          setProcessing(true);
-          dispatch($deleteTransaction(id))
-            .then(() => {
-              Toast.show({
-                text: `Task with id=${id}, is deleted successfully.`,
-                type: 'success',
-                duration: 6000,
-              });
-              props.navigation.setParams({
-                notApprovedTrans: props.route.params.notApprovedTrans - 1,
-              });
-              dispatch($fetchLaborTransactions())
-                .then(() => setProcessing(false))
-                .catch(() =>
-                  console.log(
-                    'ERROR IN FETCHING LABOR TRANSACTIONS FOR SELECTED MONTH',
-                  ),
-                );
-            })
-            .catch(() =>
-              Toast.show({
-                text: `Task with id=${id}, could not be deleted.`,
-                type: 'danger',
-                duration: 6000,
-              }),
-            );
-        },
-      },
-      {
-        text: 'Cancel',
-      },
-    ]);
-  };
 
   const dataList =
     props.monthlyLaborTransactions &&
@@ -96,6 +61,13 @@ const LaborTransactionsView = props => {
 
   const [itemsToDelete, setItemsToDelete] = useState([]);
 
+  const setItemsToDeleteAction = item => {
+    setItemsToDelete([...itemsToDelete, item['spi:labtransid']]);
+
+    props.navigation.setParams({
+      itemsToDelete: [...itemsToDelete, item['spi:labtransid']],
+    });
+  };
   const getList = () => {
     return (
       <View style={{flex: 1}}>
@@ -118,9 +90,7 @@ const LaborTransactionsView = props => {
                 : {};
               return (
                 <TouchableLongPress
-                  onPress={() =>
-                    setItemsToDelete([...itemsToDelete, item['spi:labtransid']])
-                  }>
+                  onPress={() => setItemsToDeleteAction(item)}>
                   <Card>
                     <CardItem
                       header
@@ -293,7 +263,6 @@ const styles = StyleSheet.create({
   btnDelete: {
     height: 'auto',
   },
-  btnDeleteIcon: {color: COLORS.danger, fontSize: 30, marginTop: 0},
   cardHeaderDesc: {flex: 5},
 
   cardHeaderWonum: {

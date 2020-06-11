@@ -1,7 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {Text, View, StyleSheet} from 'react-native';
-import {Header, Left, Button, Icon, Body, Right} from 'native-base';
+import {Text, View, StyleSheet, Alert} from 'react-native';
+import {
+  Header,
+  Left,
+  Button,
+  Icon,
+  Body,
+  Right,
+  Toast,
+  CheckBox,
+} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
@@ -11,9 +20,48 @@ import AddTransactionsView from './AddTransactionsView';
 import PreviewAddTransactionsView from './PreviewAddTransactionsView';
 import MonthlyTransList from './MonthlyTransList';
 
+import {getStore} from '../../store';
+
+import {$deleteTransaction, $fetchLaborTransactions} from './state';
+
 const Stack = createStackNavigator();
 
 const LaborStack = props => {
+  const deleteTransactions = arrayIds => {
+    const {dispatch} = getStore();
+    Alert.alert('Delete', `Do you really want to delete heighlited trans ?`, [
+      {
+        text: 'Delete',
+        onPress: () => {
+          Promise.all(
+            arrayIds.map(async id => {
+              await dispatch($deleteTransaction(id));
+            }),
+          ).then(() => {
+            Toast.show({
+              text: 'Bulk delete successful.',
+              type: 'success',
+              duration: 6000,
+            });
+            // props.navigation.setParams({
+            //   notApprovedTrans: props.route.params.notApprovedTrans - 1,
+            // });
+            dispatch($fetchLaborTransactions()).catch(() =>
+              Toast.show({
+                text: 'Bulk delete failed.',
+                type: 'danger',
+                duration: 6000,
+              }),
+            );
+          });
+        },
+      },
+      {
+        text: 'Cancel',
+      },
+    ]);
+  };
+
   return (
     <Stack.Navigator initialRouteName="MonthlyTransList">
       <Stack.Screen
@@ -43,35 +91,63 @@ const LaborStack = props => {
         options={({route}) => ({
           headerTintColor: COLORS.white,
           headerStyle: {backgroundColor: COLORS.blue},
-          headerTitle: () => (
-            <View style={styles.headerTitleComponent}>
-              <Text style={styles.screenTitleText}>
-                {`Period : ${route.params.month}`}
-              </Text>
-              <View>
-                <View style={styles.transCountView}>
+          headerTitleStyle: {color: 'green'},
+          headerTitle: () => {
+            return (
+              <View style={styles.headerTitleComponent}>
+                {/* <Button rounded>
+                  <Icon style={{fontSize: 30}} type="Feather" name="x-square" />
+                </Button> */}
+                <Text style={styles.screenTitleText}>{route.params.month}</Text>
+                <Button
+                  transparent
+                  style={styles.btnDelete}
+                  onPress={() =>
+                    deleteTransactions(route.params.itemsToDelete)
+                  }>
                   <Icon
-                    type="FontAwesome"
-                    name="circle"
-                    style={styles.transCountApprovedIcon}
+                    style={styles.btnDeleteIcon}
+                    type="MaterialIcons"
+                    name="delete"
                   />
-                  <Text style={styles.transCountText}>
-                    {route.params.approvedTrans}
+                  <Text
+                    style={{
+                      color: COLORS.white,
+                      position: 'absolute',
+                      top: 15,
+                      left: 32,
+                      fontWeight: 'bold',
+                    }}>
+                    {route.params.itemsToDelete &&
+                      route.params.itemsToDelete.length}
                   </Text>
-                </View>
-                <View style={styles.transCountView}>
-                  <Icon
-                    type="FontAwesome"
-                    name="circle"
-                    style={styles.transCountNotApprovedIcon}
-                  />
-                  <Text style={styles.transCountText}>
-                    {route.params.notApprovedTrans}
-                  </Text>
+                </Button>
+
+                <View>
+                  <View style={styles.transCountView}>
+                    <Icon
+                      type="FontAwesome"
+                      name="circle"
+                      style={styles.transCountApprovedIcon}
+                    />
+                    <Text style={styles.transCountText}>
+                      {route.params.approvedTrans}
+                    </Text>
+                  </View>
+                  <View style={styles.transCountView}>
+                    <Icon
+                      type="FontAwesome"
+                      name="circle"
+                      style={styles.transCountNotApprovedIcon}
+                    />
+                    <Text style={styles.transCountText}>
+                      {route.params.notApprovedTrans}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ),
+            );
+          },
         })}
       />
       <Stack.Screen
@@ -120,5 +196,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 10,
   },
+  btnDeleteIcon: {color: COLORS.danger, fontSize: 40, marginTop: 0},
 });
 export default LaborStack;
