@@ -7,7 +7,8 @@ const COLORS = {
   white: '#ffffff',
   danger: '#d9534f',
   success: '#5cb85c',
-  highlight: '#fbeded',
+  dangerHighlight: 'rgba(217, 83, 79, 0.22)',
+  highlight: 'rgba(92, 184, 92, 0.44)',
   lightBrand: '#f4f4f4',
 };
 
