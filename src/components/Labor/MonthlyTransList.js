@@ -86,17 +86,11 @@ const MonthlyTransList = props => {
                       <Left>
                         <Text style={styles.listItemDateText}>{item[0]}</Text>
                       </Left>
-                      <Body>
-                        <View style={styles.transCountView}>
-                          <Icon
-                            type="FontAwesome"
-                            name="circle"
-                            style={styles.transCountApprovedIcon}
-                          />
-                          <Text style={styles.listItemText}>
-                            {approvedTrans}
-                          </Text>
-                        </View>
+                      <Body
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
                         <View style={styles.transCountView}>
                           <Icon
                             type="FontAwesome"
@@ -104,7 +98,17 @@ const MonthlyTransList = props => {
                             style={styles.transCountNotApprovedIcon}
                           />
                           <Text style={styles.listItemText}>
-                            {notApprovedTrans}
+                            {('0' + notApprovedTrans.toString()).slice(-2)}
+                          </Text>
+                        </View>
+                        <View style={styles.transCountView}>
+                          <Icon
+                            type="FontAwesome"
+                            name="circle"
+                            style={styles.transCountApprovedIcon}
+                          />
+                          <Text style={styles.listItemText}>
+                            {('0' + approvedTrans.toString()).slice(-2)}
                           </Text>
                         </View>
                       </Body>
@@ -136,18 +140,18 @@ const MonthlyTransList = props => {
 const styles = StyleSheet.create({
   listItemText: {
     color: COLORS.lightGray,
-    fontSize: 18,
+    fontSize: 20,
   },
   listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 18},
-  transCountView: {flexDirection: 'row', alignItems: 'center'},
+  transCountView: {flexDirection: 'row', alignItems: 'center', marginRight: 6},
   transCountApprovedIcon: {
     color: COLORS.success,
-    fontSize: 18,
+    fontSize: 24,
     marginRight: 10,
   },
   transCountNotApprovedIcon: {
     color: COLORS.danger,
-    fontSize: 18,
+    fontSize: 24,
     marginRight: 10,
   },
 });

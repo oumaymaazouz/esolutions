@@ -65,7 +65,6 @@ const LaborTransactionsView = props => {
         .slice(0, itemIndex)
         .concat(itemsToDelete.slice(itemIndex + 1, itemsToDelete.length));
       setItemsToDelete(updatedItems);
-      console.log('**********************', itemsToDelete);
       props.navigation.setParams({
         itemsToDelete: updatedItems,
       });
@@ -77,7 +76,6 @@ const LaborTransactionsView = props => {
       });
     }
   };
-  console.log(itemsToDelete, '+++++++++++++++++++++');
   const getList = () => {
     return (
       <View style={{flex: 1}}>
