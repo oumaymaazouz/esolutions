@@ -58,7 +58,7 @@ const AddTransactionsView = props => {
         type: 'danger',
         duration: 6000,
       });
-    } else if (new Date(dateStart) >= new Date(dateEnd)) {
+    } else if (new Date(dateStart) > new Date(dateEnd)) {
       Toast.show({
         text: 'Please fill start and end date correctely',
         type: 'danger',
