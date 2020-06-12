@@ -71,6 +71,56 @@ function $login(domain, username, password) {
   };
 }
 
+
+/** LOGOUT */
+const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
+
+const logoutRequest = () => {
+  return {
+    type: LOGOUT_REQUEST,
+  };
+};
+
+const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+
+const logoutSuccess = () => {
+  return {
+    type: LOGOUT_SUCCESS,
+  };
+};
+
+const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
+
+const logoutFailure = error => {
+  return {
+    type: LOGOUT_FAILURE,
+    error,
+  };
+};
+//# logout function
+function $logout() {
+  return async function(dispatch, getState) {
+    dispatch(logoutRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    try {
+      const responselogout = await fetch(`${DOMAIN_NAME}/oslc/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
+      });
+      if (!responselogout.ok) {
+        throw Error(responselogout);
+      }
+      dispatch(logoutSuccess());
+    } catch (error) {
+      dispatch(logoutFailure(error));
+      throw error;
+    }
+  };
+}
+
 // 1-  Create action types + action creators of login
 const FETCH_PROFILE_REQUEST = 'FETCH_PROFILE_REQUEST';
 
@@ -140,6 +190,15 @@ export function authReducer(state = initialState, action) {
         maxupg: action.data.maxupg,
         maxauth: action.data.maxauth,
       };
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        DOMAIN_NAME: null,
+        username: null,
+        maxupg: null,
+        maxauth: null,
+        profile: null,
+      };
     case FETCH_PROFILE_REQUEST:
       return {
         ...state,
@@ -155,4 +214,4 @@ export function authReducer(state = initialState, action) {
   }
 }
 
-export {$login, $fetchProfile};
+export {$login, $logout, $fetchProfile};

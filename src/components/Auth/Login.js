@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import {Dimensions, View, Image, Text, StyleSheet, Button} from 'react-native';
+import {Dimensions, View, Image, Text, StyleSheet} from 'react-native';
 
 import {
   Input,
@@ -11,6 +11,8 @@ import {
   Header,
   Toast,
   Icon,
+  Button,
+  Spinner,
 } from 'native-base';
 
 import LOGO from '../../assets/logo.png';
@@ -18,7 +20,7 @@ import COLORS from '../../common/colors';
 
 import {getStore} from '../../store';
 
-import {$login, $fetchProfile} from './state';
+import {$login} from './state';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -32,11 +34,16 @@ const LoginView = props => {
   const [password, setPassword] = useState('Esolutions2016');
 
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [processing, setProcessing] = useState(false);
   const loginAction = (usern, pass) => {
     const {dispatch} = getStore();
-
+    setProcessing(true);
     dispatch($login(domain, usern.trim(), pass))
-      .then(() => props.navigation.navigate('Home'))
+      .then(() => {
+        setProcessing(false);
+        props.navigation.navigate('Home');
+      })
       .catch(error => {
         setErrorMessage('Please fill correct credentials.');
         Toast.show({
@@ -44,7 +51,7 @@ const LoginView = props => {
           type: 'danger',
           duration: 6000,
         });
-      })
+      });
   };
 
   return (
@@ -106,12 +113,13 @@ const LoginView = props => {
           )}
           <View style={styles.btnLoginWrapper}>
             <Button
-              title="Login"
               style={styles.loginButton}
               color={COLORS.blue}
-              disabled={!domain || !username || !password}
-              onPress={() => loginAction(username, password)}
-            />
+              disabled={!domain || !username || !password || processing}
+              onPress={() => loginAction(username, password)}>
+              <Text style={styles.loginButtonText}>Login</Text>
+              {processing && <Spinner color={COLORS.white} />}
+            </Button>
           </View>
         </Form>
       </Content>
@@ -149,6 +157,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
     height: 40,
     marginHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   btnLoginWrapper: {
     marginTop: 40,
@@ -158,6 +168,10 @@ const styles = StyleSheet.create({
 
   footer: {
     backgroundColor: 'transparent',
+  },
+  loginButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
   },
 });
 

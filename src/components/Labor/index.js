@@ -29,37 +29,41 @@ const Stack = createStackNavigator();
 const LaborStack = props => {
   const deleteTransactions = arrayIds => {
     const {dispatch} = getStore();
-    Alert.alert('Delete', `Do you really want to delete heighlited trans ?`, [
-      {
-        text: 'Delete',
-        onPress: () => {
-          Promise.all(
-            arrayIds.map(async id => {
-              await dispatch($deleteTransaction(id));
-            }),
-          ).then(() => {
-            Toast.show({
-              text: 'Bulk delete successful.',
-              type: 'success',
-              duration: 6000,
-            });
-            // props.navigation.setParams({
-            //   notApprovedTrans: props.route.params.notApprovedTrans - 1,
-            // });
-            dispatch($fetchLaborTransactions()).catch(() =>
-              Toast.show({
-                text: 'Bulk delete failed.',
-                type: 'danger',
-                duration: 6000,
+    Alert.alert(
+      'Delete',
+      `Do you really want to delete highlighted transactions ?`,
+      [
+        {
+          text: 'Delete',
+          onPress: () => {
+            Promise.all(
+              arrayIds.map(async id => {
+                await dispatch($deleteTransaction(id));
               }),
-            );
-          });
+            ).then(() => {
+              Toast.show({
+                text: 'Bulk delete successful.',
+                type: 'success',
+                duration: 6000,
+              });
+              // props.navigation.setParams({
+              //   notApprovedTrans: props.route.params.notApprovedTrans - 1,
+              // });
+              dispatch($fetchLaborTransactions()).catch(() =>
+                Toast.show({
+                  text: 'Bulk delete failed.',
+                  type: 'danger',
+                  duration: 6000,
+                }),
+              );
+            });
+          },
         },
-      },
-      {
-        text: 'Cancel',
-      },
-    ]);
+        {
+          text: 'Cancel',
+        },
+      ],
+    );
   };
 
   return (

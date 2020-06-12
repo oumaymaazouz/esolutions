@@ -6,6 +6,8 @@ import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 
 import COLORS from '../../common/colors';
 import {Icon} from 'native-base';
+import {$logout} from '../Auth/state';
+import {getStore} from '../../store';
 
 const withStore = connect(state => ({
   profile: state.Auth.profile,
@@ -13,6 +15,11 @@ const withStore = connect(state => ({
 
 function SideBar(props) {
   const dataReady = !!props.profile;
+
+  const logout = () => {
+    const {dispatch} = getStore();
+    dispatch($logout()).then(() => props.navigation.navigate('Login'));
+  };
   return (
     <DrawerContentScrollView {...props}>
       <View>
@@ -71,7 +78,7 @@ function SideBar(props) {
             style={{fontSize: 20, color: COLORS.darkGray}}
           />
         )}
-        onPress={() => props.navigation.navigate('Login')}
+        onPress={() => logout()}
       />
     </DrawerContentScrollView>
   );
