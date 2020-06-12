@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     color: COLORS.lightGray,
     fontSize: 20,
   },
-  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 18},
+  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 20},
   transCountView: {flexDirection: 'row', alignItems: 'center', marginRight: 6},
   transCountApprovedIcon: {
     color: COLORS.success,

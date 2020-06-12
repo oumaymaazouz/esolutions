@@ -92,12 +92,33 @@ const LaborStack = props => {
           headerTintColor: COLORS.white,
           headerStyle: {backgroundColor: COLORS.blue},
           headerTitleStyle: {color: 'green'},
+          headerRight: () => (
+            <View style={styles.headerRight}>
+              <View style={styles.transCountView}>
+                <Icon
+                  type="FontAwesome"
+                  name="circle"
+                  style={styles.transCountApprovedIcon}
+                />
+                <Text style={styles.transCountText}>
+                  {route.params.approvedTrans}
+                </Text>
+              </View>
+              <View style={styles.transCountView}>
+                <Icon
+                  type="FontAwesome"
+                  name="circle"
+                  style={styles.transCountNotApprovedIcon}
+                />
+                <Text style={styles.transCountText}>
+                  {route.params.notApprovedTrans}
+                </Text>
+              </View>
+            </View>
+          ),
           headerTitle: () => {
             return (
               <View style={styles.headerTitleComponent}>
-                {/* <Button rounded>
-                  <Icon style={{fontSize: 30}} type="Feather" name="x-square" />
-                </Button> */}
                 <Text style={styles.screenTitleText}>{route.params.month}</Text>
                 <Button
                   transparent
@@ -122,29 +143,6 @@ const LaborStack = props => {
                       route.params.itemsToDelete.length}
                   </Text>
                 </Button>
-
-                <View>
-                  <View style={styles.transCountView}>
-                    <Icon
-                      type="FontAwesome"
-                      name="circle"
-                      style={styles.transCountApprovedIcon}
-                    />
-                    <Text style={styles.transCountText}>
-                      {route.params.approvedTrans}
-                    </Text>
-                  </View>
-                  <View style={styles.transCountView}>
-                    <Icon
-                      type="FontAwesome"
-                      name="circle"
-                      style={styles.transCountNotApprovedIcon}
-                    />
-                    <Text style={styles.transCountText}>
-                      {route.params.notApprovedTrans}
-                    </Text>
-                  </View>
-                </View>
               </View>
             );
           },
@@ -197,5 +195,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   btnDeleteIcon: {color: COLORS.danger, fontSize: 40, marginTop: 0},
+  headerRight: {
+    marginRight: 10,
+  },
 });
 export default LaborStack;
