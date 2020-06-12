@@ -49,7 +49,7 @@ function SideBar(props) {
         onPress={() => props.navigation.navigate('Tickets')}
       /> */}
       <DrawerItem
-        label="Labor Transactions"
+        label="Labor reporting"
         labelStyle={styles.labelStyle}
         icon={() => (
           <Icon

@@ -51,6 +51,12 @@ const ProfileView = props => {
       </View>
       <List>
         <ListItem style={styles.listItem}>
+          <Label style={styles.itemLabel}>Labor code :</Label>
+          <Text style={styles.itemContent}>
+            {profile.labor.laborcode ? profile.labor.laborcode : '__'}
+          </Text>
+        </ListItem>
+        <ListItem style={styles.listItem}>
           <Label style={styles.itemLabel}>Base language :</Label>
           <Text style={styles.itemContent}>
             {profile.baseLang ? profile.baseLang : '__'}
@@ -95,7 +101,7 @@ const ProfileView = props => {
       <Header style={{backgroundColor: COLORS.blue}}>
         <Left>
           <Button transparent onPress={() => props.navigation.toggleDrawer()}>
-          <Icon type="Feather" name="menu" style={{fontSize: 34}} />
+            <Icon type="Feather" name="menu" style={{fontSize: 34}} />
           </Button>
         </Left>
         <Body />

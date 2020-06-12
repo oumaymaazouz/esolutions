@@ -45,6 +45,7 @@ const LoginView = props => {
         props.navigation.navigate('Home');
       })
       .catch(error => {
+        setProcessing(false);
         setErrorMessage('Please fill correct credentials.');
         Toast.show({
           text: 'Wrong credentials!',

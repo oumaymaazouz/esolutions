@@ -1,16 +1,7 @@
 import React, {useState} from 'react';
 
 import {Text, View, StyleSheet, Alert} from 'react-native';
-import {
-  Header,
-  Left,
-  Button,
-  Icon,
-  Body,
-  Right,
-  Toast,
-  CheckBox,
-} from 'native-base';
+import {Header, Left, Button, Icon, Body, Right, Toast} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
@@ -156,7 +147,7 @@ const LaborStack = props => {
         name="AddTransactions"
         component={AddTransactionsView}
         options={{
-          headerTitle: 'Bulk add transactions',
+          headerTitle: 'Labor reporting',
           headerTitleStyle: {fontSize: 20},
           headerStyle: {backgroundColor: COLORS.blue},
           headerTintColor: COLORS.white,

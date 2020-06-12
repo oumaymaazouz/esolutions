@@ -86,7 +86,6 @@ const AddTransactionsView = props => {
       });
 
       const {dispatch} = getStore();
-
       Promise.all(
         data.map(async item => {
           await dispatch($AddBulkLaborTransactions(item));
@@ -354,7 +353,6 @@ const AddTransactionsView = props => {
           visible={selectTaskModalVisibility}
           setSelectModalVisibility={setSelectTaskModalVisibility}
           setTask={value => {
-            console.log(value);
             setTaskDescription(value.description);
             setTransaction({
               ...transaction,
