@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 import {Text, View, StyleSheet, Alert} from 'react-native';
-import {Header, Left, Button, Icon, Body, Right, Toast} from 'native-base';
+import {Button, Icon, Toast} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
@@ -22,7 +22,7 @@ const LaborStack = props => {
     const {dispatch} = getStore();
     Alert.alert(
       'Delete',
-      `Do you really want to delete highlighted transactions ?`,
+      'Do you really want to delete highlighted transactions ?',
       [
         {
           text: 'Delete',
@@ -37,9 +37,6 @@ const LaborStack = props => {
                 type: 'success',
                 duration: 6000,
               });
-              // props.navigation.setParams({
-              //   notApprovedTrans: props.route.params.notApprovedTrans - 1,
-              // });
               dispatch($fetchLaborTransactions()).catch(() =>
                 Toast.show({
                   text: 'Bulk delete failed.',
@@ -63,20 +60,17 @@ const LaborStack = props => {
         name="MonthlyTransList"
         component={MonthlyTransList}
         options={{
-          header: () => (
-            <Header style={{backgroundColor: COLORS.blue}}>
-              <Left>
-                <Button
-                  transparent
-                  onPress={() => props.navigation.toggleDrawer()}>
-                  <Icon type="Feather" name="menu" style={{fontSize: 34}} />
-                </Button>
-              </Left>
-              <Body>
-                <Text style={{fontSize: 20, color: COLORS.white}}>Summary</Text>
-              </Body>
-              <Right />
-            </Header>
+          title: 'Summary',
+          headerTintColor: COLORS.white,
+          headerStyle: {fontSize: 20, backgroundColor: COLORS.blue},
+          headerLeft: () => (
+            <Button transparent onPress={() => props.navigation.toggleDrawer()}>
+              <Icon
+                type="Feather"
+                name="menu"
+                style={{fontSize: 34, color: COLORS.white}}
+              />
+            </Button>
           ),
         }}
       />
@@ -126,14 +120,7 @@ const LaborStack = props => {
                     type="MaterialIcons"
                     name="delete"
                   />
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      position: 'absolute',
-                      top: 15,
-                      left: 32,
-                      fontWeight: 'bold',
-                    }}>
+                  <Text style={styles.btnDeleteText}>
                     {route.params.itemsToDelete &&
                       route.params.itemsToDelete.length}
                   </Text>
@@ -190,6 +177,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   btnDeleteIcon: {color: COLORS.danger, fontSize: 40, marginTop: 0},
+  btnDeleteText: {
+    color: COLORS.white,
+    position: 'absolute',
+    top: 15,
+    left: 32,
+    fontWeight: 'bold',
+  },
   headerRight: {
     marginRight: 10,
   },
