@@ -78,8 +78,6 @@ const MonthlyTransList = props => {
                       onPress={() =>
                         props.navigation.navigate('TransactionsList', {
                           month: item[0],
-                          approvedTrans,
-                          notApprovedTrans,
                           itemsToDelete: [],
                         })
                       }>

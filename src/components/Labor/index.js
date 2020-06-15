@@ -1,8 +1,9 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
-import {Text, View, StyleSheet, Alert} from 'react-native';
-import {Button, Icon, Toast} from 'native-base';
-import {createStackNavigator} from '@react-navigation/stack';
+import { Text, View, StyleSheet, Alert } from 'react-native';
+import { Button, Icon, Toast } from 'native-base';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
 
@@ -11,15 +12,18 @@ import AddTransactionsView from './AddTransactionsView';
 import PreviewAddTransactionsView from './PreviewAddTransactionsView';
 import MonthlyTransList from './MonthlyTransList';
 
-import {getStore} from '../../store';
+import { getStore } from '../../store';
 
-import {$deleteTransaction, $fetchLaborTransactions} from './state';
+import { $deleteTransaction, $fetchLaborTransactions } from './state';
 
 const Stack = createStackNavigator();
 
+const withStore = connect(state => ({
+  monthlyLaborTransactions: state.Labor.monthlyLaborTransactions,
+}));
 const LaborStack = props => {
   const deleteTransactions = arrayIds => {
-    const {dispatch} = getStore();
+    const { dispatch } = getStore();
     Alert.alert(
       'Delete',
       'Do you really want to delete highlighted transactions ?',
@@ -62,13 +66,13 @@ const LaborStack = props => {
         options={{
           title: 'Summary',
           headerTintColor: COLORS.white,
-          headerStyle: {fontSize: 20, backgroundColor: COLORS.blue},
+          headerStyle: { fontSize: 20, backgroundColor: COLORS.blue },
           headerLeft: () => (
             <Button transparent onPress={() => props.navigation.toggleDrawer()}>
               <Icon
                 type="Feather"
                 name="menu"
-                style={{fontSize: 34, color: COLORS.white}}
+                style={{ fontSize: 34, color: COLORS.white }}
               />
             </Button>
           ),
@@ -77,12 +81,14 @@ const LaborStack = props => {
       <Stack.Screen
         name="TransactionsList"
         component={ListTransacrtionsView}
-        options={({route}) => ({
+        options={({ route }) => ({
           headerTintColor: COLORS.white,
-          headerStyle: {backgroundColor: COLORS.blue},
-          headerTitleStyle: {color: 'green'},
-          headerRight: () => (
-            <View style={styles.headerRight}>
+          headerStyle: { backgroundColor: COLORS.blue },
+          headerTitleStyle: { color: 'green' },
+          headerRight: () => {
+            const notApprovedTrans = props.monthlyLaborTransactions && props.monthlyLaborTransactions[route.params.month].filter((item) => item['spi:genapprservreceipt']).length;
+            const approvedTrans = props.monthlyLaborTransactions && props.monthlyLaborTransactions[route.params.month].filter((item) => !item['spi:genapprservreceipt']).length;
+            return (<View style={styles.headerRight}>
               <View style={styles.transCountView}>
                 <Icon
                   type="FontAwesome"
@@ -90,7 +96,7 @@ const LaborStack = props => {
                   style={styles.transCountApprovedIcon}
                 />
                 <Text style={styles.transCountText}>
-                  {route.params.approvedTrans}
+                  {approvedTrans}
                 </Text>
               </View>
               <View style={styles.transCountView}>
@@ -100,11 +106,11 @@ const LaborStack = props => {
                   style={styles.transCountNotApprovedIcon}
                 />
                 <Text style={styles.transCountText}>
-                  {route.params.notApprovedTrans}
+                  {notApprovedTrans}
                 </Text>
               </View>
-            </View>
-          ),
+            </View>)
+          },
           headerTitle: () => {
             return (
               <View style={styles.headerTitleComponent}>
@@ -135,8 +141,8 @@ const LaborStack = props => {
         component={AddTransactionsView}
         options={{
           headerTitle: 'Labor reporting',
-          headerTitleStyle: {fontSize: 20},
-          headerStyle: {backgroundColor: COLORS.blue},
+          headerTitleStyle: { fontSize: 20 },
+          headerStyle: { backgroundColor: COLORS.blue },
           headerTintColor: COLORS.white,
         }}
       />
@@ -145,8 +151,8 @@ const LaborStack = props => {
         component={PreviewAddTransactionsView}
         options={{
           headerTitle: 'Preview transactions',
-          headerTitleStyle: {fontSize: 20},
-          headerStyle: {backgroundColor: COLORS.blue},
+          headerTitleStyle: { fontSize: 20 },
+          headerStyle: { backgroundColor: COLORS.blue },
           headerTintColor: COLORS.white,
         }}
       />
@@ -160,12 +166,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  screenTitleText: {fontSize: 20, color: COLORS.white},
+  screenTitleText: { fontSize: 20, color: COLORS.white },
   transCountText: {
     color: COLORS.white,
     fontSize: 18,
   },
-  transCountView: {flexDirection: 'row', alignItems: 'center'},
+  transCountView: { flexDirection: 'row', alignItems: 'center' },
   transCountApprovedIcon: {
     color: COLORS.success,
     fontSize: 20,
@@ -176,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 10,
   },
-  btnDeleteIcon: {color: COLORS.danger, fontSize: 40, marginTop: 0},
+  btnDeleteIcon: { color: COLORS.danger, fontSize: 40, marginTop: 0 },
   btnDeleteText: {
     color: COLORS.white,
     position: 'absolute',
@@ -188,4 +194,4 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
-export default LaborStack;
+export default withStore(LaborStack);
