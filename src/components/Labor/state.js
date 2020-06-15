@@ -376,11 +376,11 @@ export const $previewTransactionsList = data => {
 // 2- Create reducer
 export function laborReducer(state = initialState, action) {
   switch (action.type) {
-    // case FETCH_LABOR_TRANSACTIONS_REQUEST:
-    //   return {
-    //     ...state,
-    //     laborTransactions: null,
-    //   };
+    case FETCH_LABOR_TRANSACTIONS_REQUEST:
+      return {
+        ...state,
+        laborTransactions: null,
+      };
     case FETCH_LABOR_TRANSACTIONS_SUCCESS:
       const laborTransactions = action.data;
       const transArray =

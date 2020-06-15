@@ -12,10 +12,7 @@ import {
   Icon,
   Left,
   Right,
-  Button,
-  Toast,
 } from 'native-base';
-import {LongPressGestureHandler} from 'react-native-gesture-handler';
 
 import Loader from '../Shared/Loader';
 
@@ -24,7 +21,6 @@ import {$fetchLaborTransactions, $deleteTransaction} from './state';
 import COLORS from '../../common/colors';
 
 import {fullFormatDate} from '../../common/helper';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import TouchableLongPress from '../Shared/TouchableLongPress';
 
 const withStore = connect(state => ({
@@ -232,7 +228,7 @@ const LaborTransactionsView = props => {
   return (
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
-        {processing ? <Loader /> : getList()}
+        {!props.laborTransactions ? <Loader /> : getList()}
       </Content>
     </Container>
   );
