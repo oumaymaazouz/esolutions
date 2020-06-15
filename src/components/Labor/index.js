@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   btnDeleteText: {
     color: COLORS.white,
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 30 : 15,
+    top: Platform.OS === 'ios' ? 20 : 15,
     left: Platform.OS === 'ios' ? 31 : 32,
     fontWeight: 'bold',
   },
