@@ -32,7 +32,7 @@ export function setUpStore() {
     Auth: authReducer,
     Ticket: TicketsReducer,
     Labor: laborReducer,
-    laborApproval: laborApprovalReducer,
+    LaborApproval: laborApprovalReducer,
   });
   persistedReducer = persistReducer(persistConfig, rootReducer);
   store = createStore(persistedReducer, applyMiddleware(thunk, logger));

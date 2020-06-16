@@ -5,8 +5,10 @@ import {Button, Icon} from 'native-base';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
-import LaborList from './LaborList';
 import {COLORS} from '../../common/colors';
+
+import LaborList from './LaborList';
+import LaborMonthlyTransList from './LaborMonthlyTransList';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +28,15 @@ const LaborApprovalStack = props => {
             </Button>
           ),
         }}
+      />
+      <Stack.Screen
+        name="LaborMonthlyTransList"
+        component={LaborMonthlyTransList}
+        options={({route}) => ({
+          title: `${route.params.laborcode} : ${route.params.firstname} ${route.params.lastname}`,
+          headerTintColor: COLORS.white,
+          headerStyle: styles.headerStyle,
+        })}
       />
     </Stack.Navigator>
   );

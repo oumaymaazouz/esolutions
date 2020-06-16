@@ -30,8 +30,8 @@ const withStore = connect(state => ({
 
 const LoginView = props => {
   const [domain, setDomain] = useState('http://ess-maximosupport.com/support');
-  const [username, setUsername] = useState('mxintadm');
-  const [password, setPassword] = useState('123456');
+  const [username, setUsername] = useState('mohamed.chihaoui');
+  const [password, setPassword] = useState('Esolutions2016');
 
   const [errorMessage, setErrorMessage] = useState('');
 

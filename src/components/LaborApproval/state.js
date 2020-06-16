@@ -2,6 +2,8 @@ import {groupBy} from '../../common/helper';
 
 const initialState = {
   laborList: null,
+  laborTransactions: null,
+  monthlyLaborTransactions: null,
 };
 
 /** FETCH ALL LABORS */
@@ -61,6 +63,64 @@ export function $fetchLabors() {
   };
 }
 
+/** FETCH LABOR TRANSACTIONS */
+
+const FETCH_LABOR_TRANSACTIONS_REQUEST = 'FETCH_LABOR_TRANSACTIONS_REQUEST';
+
+const fetchLaborTransactionsRequest = () => {
+  return {
+    type: FETCH_LABOR_TRANSACTIONS_REQUEST,
+  };
+};
+
+const FETCH_LABOR_TRANSACTIONS_SUCCESS = 'FETCH_LABOR_TRANSACTIONS_SUCCESS';
+
+const fetchLaborTransactionsSuccess = data => {
+  return {
+    type: FETCH_LABOR_TRANSACTIONS_SUCCESS,
+    data,
+  };
+};
+
+const FETCH_LABOR_TRANSACTIONS_FAILURE = 'FETCH_LABOR_TRANSACTIONS_FAILURE';
+
+const fetchLaborTransactionsFailure = error => {
+  return {
+    type: FETCH_LABOR_TRANSACTIONS_FAILURE,
+    error,
+  };
+};
+export function $fetchLaborTransactions(laborcode) {
+  console.log(laborcode, '**************');
+  return function(dispatch, getState) {
+    dispatch(fetchLaborTransactionsRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    return fetch(
+      `${DOMAIN_NAME}/oslc/os/oslclabtrans?oslc.select=labtransid,laborcode,transdate,regularhrs,startdateentered,genapprservreceipt,craft,workorder.description,workorder.taskid,workordernt.description,workordernt.wonum&oslc.where=laborcode="${laborcode}"`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
+      },
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.json();
+      })
+      .then(data => {
+        dispatch(fetchLaborTransactionsSuccess(data['rdfs:member']));
+      })
+      .catch(error => {
+        dispatch(fetchLaborTransactionsFailure(error));
+        throw error;
+      });
+  };
+}
+
 /** REDUCER */
 export function laborApprovalReducer(state = initialState, action) {
   switch (action.type) {
@@ -73,6 +133,34 @@ export function laborApprovalReducer(state = initialState, action) {
       return {
         ...state,
         laborList: action.data,
+      };
+    case FETCH_LABOR_TRANSACTIONS_REQUEST:
+      return {
+        ...state,
+        laborTransactions: null,
+      };
+    case FETCH_LABOR_TRANSACTIONS_SUCCESS:
+      const laborTransactions = action.data;
+      const transArray =
+        laborTransactions &&
+        laborTransactions.map(trans => {
+          return {
+            ...trans,
+            month: trans['spi:startdateentered'].substring(0, 7),
+          };
+        });
+      const monthlyLaborTransactions = groupBy(transArray, 'month');
+      const monthlyLabTransDesc = Object.keys(monthlyLaborTransactions)
+        .sort((a, b) => new Date(b) - new Date(a))
+        .reduce((acc, cv) => {
+          acc[cv] = monthlyLaborTransactions[cv];
+          return acc;
+        }, {});
+
+      return {
+        ...state,
+        laborTransactions,
+        monthlyLaborTransactions: monthlyLabTransDesc,
       };
     default:
       return state;

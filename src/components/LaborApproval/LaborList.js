@@ -10,6 +10,7 @@ import {
   Left,
   Body,
   Right,
+  Icon,
 } from 'native-base';
 
 import {commonStyles} from '../../common/styles';
@@ -21,7 +22,7 @@ import Loader from '../Shared/Loader';
 import CustomAvatar from '../Shared/CustomAvatar';
 
 const withStore = connect(state => ({
-  laborList: state.laborApproval.laborList,
+  laborList: state.LaborApproval.laborList,
 }));
 const LaborList = props => {
   useEffect(() => {
@@ -43,16 +44,28 @@ const LaborList = props => {
           return (
             <Fragment>
               {item.person.firstname && (
-                <ListItem>
-                  <CustomAvatar
-                    color={randomColor}
-                    firstname={item.person.firstname}
-                    lastname={item.person.lastname}
-                  />
+                <ListItem
+                  onPress={() => {
+                    props.navigation.navigate('LaborMonthlyTransList', {
+                      laborcode: item['spi:laborcode'],
+                      firstname: item.person.firstname,
+                      lastname: item.person.lastname,
+                    });
+                  }}>
+                  <Left style={styles.laborInfo}>
+                    <CustomAvatar
+                      color={randomColor}
+                      firstname={item.person.firstname}
+                      lastname={item.person.lastname}
+                    />
+                    <Text style={styles.laborname}>{`${item.person.firstname} ${
+                      item.person.lastname
+                    }`}</Text>
+                  </Left>
 
-                  <Text style={styles.laborname}>{`${item.person.firstname} ${
-                    item.person.lastname
-                  }`}</Text>
+                  <Right>
+                    <Icon type="AntDesign" name="right" />
+                  </Right>
                 </ListItem>
               )}
             </Fragment>
@@ -74,11 +87,12 @@ const LaborList = props => {
 };
 
 const styles = StyleSheet.create({
+  laborInfo: {flexDirection: 'row', alignItems: 'center'},
   laborname: {
-    marginLeft: 20,
     color: COLORS.darkGray,
     fontSize: 14,
     fontStyle: 'italic',
+    marginLeft: 20,
   },
 });
 
