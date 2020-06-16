@@ -1,8 +1,8 @@
-import React, {useState, Fragment} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 
 import {Text, View, StyleSheet, Alert, Platform} from 'react-native';
-import {Button, Icon, Toast, Spinner} from 'native-base';
+import {Button, Icon, Toast} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
@@ -69,7 +69,7 @@ const LaborStack = props => {
         options={{
           title: 'Summary',
           headerTintColor: COLORS.white,
-          headerStyle: {fontSize: 20, backgroundColor: COLORS.blue},
+          headerStyle: {backgroundColor: COLORS.blue},
           headerLeft: () => (
             <Button transparent onPress={() => props.navigation.toggleDrawer()}>
               <Icon

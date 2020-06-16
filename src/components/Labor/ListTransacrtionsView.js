@@ -118,20 +118,7 @@ const LaborTransactionsView = props => {
                         </Text>
                       </Left>
                       <Body style={styles.cardItemHeaderBody} />
-                      <Right style={styles.cardItemHeaderRight}>
-                        {/* <Button
-                          transparent
-                          style={styles.btnDelete}
-                          onPress={() =>
-                            deleteTransactions(item['spi:labtransid'])
-                          }>
-                          <Icon
-                            style={styles.btnDeleteIcon}
-                            type="AntDesign"
-                            name="delete"
-                          />
-                        </Button> */}
-                      </Right>
+                      <Right style={styles.cardItemHeaderRight} />
                     </CardItem>
                     <CardItem
                       bordered
