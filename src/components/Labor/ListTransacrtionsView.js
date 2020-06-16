@@ -18,7 +18,7 @@ import Loader from '../Shared/Loader';
 
 import {getStore} from '../../store';
 import {$fetchLaborTransactions, $deleteTransaction} from './state';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 import {fullFormatDate} from '../../common/helper';
 import TouchableLongPress from '../Shared/TouchableLongPress';

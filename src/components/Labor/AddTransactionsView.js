@@ -15,7 +15,7 @@ import {
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 import {getStore} from '../../store';
 import {
   formatDate,

@@ -7,7 +7,8 @@ import MappingView from '../Tickets/MappingView';
 import TicketsStack from '../Tickets';
 import ProfileView from '../Auth/ProfileView';
 import LaborStack from '../Labor';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
+import LaborApprovalStack from '../LaborApproval';
 
 const Drawer = createDrawerNavigator();
 
@@ -32,6 +33,7 @@ const Home = () => {
         }}
       />
       <Drawer.Screen name="LaborTransactions" component={LaborStack} />
+      <Drawer.Screen name="LaborApprovalStack" component={LaborApprovalStack} />
       {/* <Drawer.Screen name="Tickets" component={TicketsStack} /> */}
       <Drawer.Screen name="Map" component={MappingView} />
     </Drawer.Navigator>

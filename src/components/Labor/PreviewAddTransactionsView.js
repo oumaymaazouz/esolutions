@@ -12,7 +12,7 @@ import {
   Button,
 } from 'native-base';
 
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 import Loader from '../Shared/Loader';
 

@@ -10,7 +10,7 @@ import {
 import {View, Button} from 'native-base';
 import Loader from '../Shared/Loader';
 import {screenWidth} from '../../common/helper';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 const withStore = connect(state => ({projects: state.Labor.projects}));
 

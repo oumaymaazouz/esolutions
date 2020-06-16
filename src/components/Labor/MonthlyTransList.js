@@ -15,7 +15,7 @@ import {
   Fab,
 } from 'native-base';
 
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 import {getStore} from '../../store';
 
 import {$fetchLaborTransactions} from './state';

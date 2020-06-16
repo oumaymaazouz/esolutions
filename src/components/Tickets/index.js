@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import ListingView from '../Tickets/ListingView';
 import DeatilsView from './DetailsView';
 import AddView from './AddView';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 const Stack = createStackNavigator();
 

@@ -1,4 +1,4 @@
-const COLORS = {
+export const COLORS = {
   blue: '#3F51B5',
   lightBlue: '#7885cb',
   backgroundBlue: 'color: rgba(63, 81, 181, 0.14)',
@@ -12,4 +12,20 @@ const COLORS = {
   lightBrand: '#f4f4f4',
 };
 
-export default COLORS;
+export const avatarPalette = [
+  '#5FA848',
+  '#4EA848',
+  '#48A853',
+  '#48A863',
+  '#48A874',
+  '#48A884',
+  '#48A895',
+  '#48A9A5',
+  '#489BA8',
+  '#488BA8',
+  '#487AA8',
+  '#486AA8',
+  '#4859A8',
+  '#4849A8',
+  '#5848A8',
+];

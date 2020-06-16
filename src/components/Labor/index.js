@@ -7,7 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import ListTransacrtionsView from './ListTransacrtionsView';
 
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 import AddTransactionsView from './AddTransactionsView';
 import PreviewAddTransactionsView from './PreviewAddTransactionsView';
 import MonthlyTransList from './MonthlyTransList';

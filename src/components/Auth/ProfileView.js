@@ -21,7 +21,7 @@ import Loader from '../Shared/Loader';
 import {getStore} from '../../store';
 
 import {$fetchProfile} from './state';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 const withStore = connect(state => ({
   maxauth: state.Auth.maxauth,

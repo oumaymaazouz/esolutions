@@ -10,7 +10,7 @@ import {
   Textarea,
   H1,
 } from "native-base";
-import COLORS from "../../common/colors";
+import {COLORS} from "../../common/colors";
 
 const FilterModal = (props) => {
   return (

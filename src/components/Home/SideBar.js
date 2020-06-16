@@ -4,7 +4,7 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 import {Icon} from 'native-base';
 import {$logout} from '../Auth/state';
 import {getStore} from '../../store';
@@ -43,7 +43,7 @@ function SideBar(props) {
           <Icon
             type="FontAwesome5"
             name="ticket-alt"
-            style={{fontSize: 20, color: COLORS.darkGray}}
+            style={styles.drawerItemIcon}
           />
         )}
         onPress={() => props.navigation.navigate('Tickets')}
@@ -55,7 +55,7 @@ function SideBar(props) {
           <Icon
             type="FontAwesome5"
             name="business-time"
-            style={{fontSize: 20, color: COLORS.darkGray}}
+            style={styles.drawerItemIcon}
           />
         )}
         onPress={() => props.navigation.navigate('LaborTransactions')}
@@ -69,14 +69,22 @@ function SideBar(props) {
         onPress={() => props.navigation.navigate("Map")}
       /> */}
       <DrawerItem
-        label="Logout"
+        label="Labor approval"
         labelStyle={styles.labelStyle}
         icon={() => (
           <Icon
             type="AntDesign"
-            name="logout"
-            style={{fontSize: 20, color: COLORS.darkGray}}
+            name="clockcircleo"
+            style={styles.drawerItemIcon}
           />
+        )}
+        onPress={() => props.navigation.navigate('LaborApprovalStack')}
+      />
+      <DrawerItem
+        label="Logout"
+        labelStyle={styles.labelStyle}
+        icon={() => (
+          <Icon type="AntDesign" name="logout" style={styles.drawerItemIcon} />
         )}
         onPress={() => logout()}
       />
@@ -85,6 +93,7 @@ function SideBar(props) {
 }
 
 const styles = StyleSheet.create({
+  drawerItemIcon: {fontSize: 20, color: COLORS.darkGray},
   customProfileItem: {
     flex: 1,
     flexDirection: 'row',

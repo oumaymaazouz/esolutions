@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {authReducer} from '../components/Auth/state';
 import {TicketsReducer} from '../components/Tickets/state';
 import {laborReducer} from '../components/Labor/state';
+import {laborApprovalReducer} from '../components/LaborApproval/state';
 
 const persistConfig = {
   key: 'root',
@@ -31,6 +32,7 @@ export function setUpStore() {
     Auth: authReducer,
     Ticket: TicketsReducer,
     Labor: laborReducer,
+    laborApproval: laborApprovalReducer,
   });
   persistedReducer = persistReducer(persistConfig, rootReducer);
   store = createStore(persistedReducer, applyMiddleware(thunk, logger));

@@ -15,7 +15,7 @@ import {
 } from 'native-base';
 
 import {getStore} from '../../store';
-import COLORS from '../../common/colors';
+import {COLORS} from '../../common/colors';
 
 import Loader from '../Shared/Loader';
 import FilterModal from './FilterModal';

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
 import { Container, Content, Form, Item, Label, Input } from "native-base";
-import COLORS from "../../common/colors";
+import {COLORS} from "../../common/colors";
 
 const AddView = () => {
   return (
