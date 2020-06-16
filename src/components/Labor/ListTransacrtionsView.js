@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
 import {connect} from 'react-redux';
 
 import {View, Text, FlatList, StyleSheet, Alert} from 'react-native';
@@ -22,6 +22,7 @@ import COLORS from '../../common/colors';
 
 import {fullFormatDate} from '../../common/helper';
 import TouchableLongPress from '../Shared/TouchableLongPress';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const withStore = connect(state => ({
   profile: state.Auth.profile,
@@ -41,6 +42,8 @@ const LaborTransactionsView = props => {
   }, [props]);
 
   const [processing, setProcessing] = useState(false);
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const dataList =
     props.monthlyLaborTransactions &&
@@ -71,6 +74,119 @@ const LaborTransactionsView = props => {
         itemsToDelete: updatedItems,
       });
     }
+    if (updatedItems.length > 0) {
+      setIsDeleting(true);
+    } else {
+      setIsDeleting(false);
+    }
+  };
+
+  console.log('---------------------', isDeleting);
+
+  const getListItem = item => {
+    const day = item['spi:startdateentered']
+      ? new Date(item['spi:startdateentered']).getDay()
+      : null;
+    const weekendHighlitCardStyle =
+      day === 5 || day === 6 ? {backgroundColor: COLORS.lightBrand} : {};
+    const deleteHighlitCardStyle = itemsToDelete.includes(
+      item['spi:labtransid'],
+    )
+      ? {backgroundColor: COLORS.dangerHighlight}
+      : {};
+    return (
+      <Card>
+        <CardItem
+          header
+          bordered
+          style={[
+            styles.cardHeader,
+            weekendHighlitCardStyle,
+            deleteHighlitCardStyle,
+          ]}>
+          <Left style={styles.cardHeaderDesc}>
+            <Text style={styles.cardHeaderWonum}>
+              {`WO# : ${
+                item.workordernt.wonum ? item.workordernt.wonum : '--'
+              } - ${
+                item.workordernt.description
+                  ? item.workordernt.description
+                  : '--'
+              }`}
+            </Text>
+          </Left>
+          <Body style={styles.cardItemHeaderBody} />
+          <Right style={styles.cardItemHeaderRight} />
+        </CardItem>
+        <CardItem
+          bordered
+          style={[weekendHighlitCardStyle, deleteHighlitCardStyle]}>
+          <Body>
+            <View style={styles.cardItemStyle}>
+              <Text style={styles.cardLabelItem}>{`Date   : `}</Text>
+              <Text style={styles.cardDescItem}>{`${
+                item['spi:startdateentered']
+                  ? fullFormatDate(item['spi:startdateentered'])
+                  : '--'
+              }`}</Text>
+            </View>
+
+            <View style={styles.cardItemStyle}>
+              <Text style={styles.cardLabelItem}>{`Task   :`} </Text>
+              <Text style={styles.cardDescItem}>{`${
+                item.workorder.taskid ? item.workorder.taskid : '--'
+              } - ${
+                item.workorder.description ? item.workorder.description : '--'
+              }`}</Text>
+            </View>
+
+            <View style={styles.cardItemStyle}>
+              <Text style={styles.cardLabelItem}>{'Labor : '}</Text>
+              <Text style={styles.cardDescItem}>{`${
+                item['spi:laborcode'] ? item['spi:laborcode'] : '--'
+              } - ${props.profile.displayName}`}</Text>
+            </View>
+
+            <View style={styles.cardItemStyle}>
+              <Text style={styles.cardLabelItem}>{'Craft  :'}</Text>
+              <Text style={styles.cardDescItem}>{`${
+                item['spi:craft'] ? item['spi:craft'] : '--'
+              }`}</Text>
+            </View>
+          </Body>
+        </CardItem>
+        <CardItem
+          footer
+          bordered
+          style={[weekendHighlitCardStyle, deleteHighlitCardStyle]}>
+          <Left>
+            <Text style={styles.regHrsText}>
+              {`REPORTED HOURS : ${
+                item['spi:regularhrs'] ? item['spi:regularhrs'] : '--'
+              }`}
+            </Text>
+          </Left>
+          <Right>
+            <Text>
+              {' '}
+              {item['spi:genapprservreceipt'] ? (
+                <Icon
+                  type="FontAwesome"
+                  name="circle"
+                  style={styles.greenCircle}
+                />
+              ) : (
+                <Icon
+                  type="FontAwesome"
+                  name="circle"
+                  style={styles.redCircle}
+                />
+              )}
+            </Text>
+          </Right>
+        </CardItem>
+      </Card>
+    );
   };
   const getList = () => {
     return (
@@ -80,135 +196,20 @@ const LaborTransactionsView = props => {
             data={props.monthlyLaborTransactions && dataList}
             refreshing={processing}
             renderItem={({item}) => {
-              const day = item['spi:startdateentered']
-                ? new Date(item['spi:startdateentered']).getDay()
-                : null;
-              const weekendHighlitCardStyle =
-                day === 5 || day === 6
-                  ? {backgroundColor: COLORS.lightBrand}
-                  : {};
-              const deleteHighlitCardStyle = itemsToDelete.includes(
-                item['spi:labtransid'],
-              )
-                ? {backgroundColor: COLORS.dangerHighlight}
-                : {};
               return (
-                <TouchableLongPress
-                  onPress={() => setItemsToDeleteAction(item)}>
-                  <Card>
-                    <CardItem
-                      header
-                      bordered
-                      style={[
-                        styles.cardHeader,
-                        weekendHighlitCardStyle,
-                        deleteHighlitCardStyle,
-                      ]}>
-                      <Left style={styles.cardHeaderDesc}>
-                        <Text style={styles.cardHeaderWonum}>
-                          {`WO# : ${
-                            item.workordernt.wonum
-                              ? item.workordernt.wonum
-                              : '--'
-                          } - ${
-                            item.workordernt.description
-                              ? item.workordernt.description
-                              : '--'
-                          }`}
-                        </Text>
-                      </Left>
-                      <Body style={styles.cardItemHeaderBody} />
-                      <Right style={styles.cardItemHeaderRight}>
-                        {/* <Button
-                          transparent
-                          style={styles.btnDelete}
-                          onPress={() =>
-                            deleteTransactions(item['spi:labtransid'])
-                          }>
-                          <Icon
-                            style={styles.btnDeleteIcon}
-                            type="AntDesign"
-                            name="delete"
-                          />
-                        </Button> */}
-                      </Right>
-                    </CardItem>
-                    <CardItem
-                      bordered
-                      style={[weekendHighlitCardStyle, deleteHighlitCardStyle]}>
-                      <Body>
-                        <View style={styles.cardItemStyle}>
-                          <Text
-                            style={styles.cardLabelItem}>{`Date   : `}</Text>
-                          <Text style={styles.cardDescItem}>{`${
-                            item['spi:startdateentered']
-                              ? fullFormatDate(item['spi:startdateentered'])
-                              : '--'
-                          }`}</Text>
-                        </View>
-
-                        <View style={styles.cardItemStyle}>
-                          <Text style={styles.cardLabelItem}>
-                            {`Task   :`}{' '}
-                          </Text>
-                          <Text style={styles.cardDescItem}>{`${
-                            item.workorder.taskid ? item.workorder.taskid : '--'
-                          } - ${
-                            item.workorder.description
-                              ? item.workorder.description
-                              : '--'
-                          }`}</Text>
-                        </View>
-
-                        <View style={styles.cardItemStyle}>
-                          <Text style={styles.cardLabelItem}>{'Labor : '}</Text>
-                          <Text style={styles.cardDescItem}>{`${
-                            item['spi:laborcode'] ? item['spi:laborcode'] : '--'
-                          } - ${props.profile.displayName}`}</Text>
-                        </View>
-
-                        <View style={styles.cardItemStyle}>
-                          <Text style={styles.cardLabelItem}>{'Craft  :'}</Text>
-                          <Text style={styles.cardDescItem}>{`${
-                            item['spi:craft'] ? item['spi:craft'] : '--'
-                          }`}</Text>
-                        </View>
-                      </Body>
-                    </CardItem>
-                    <CardItem
-                      footer
-                      bordered
-                      style={[weekendHighlitCardStyle, deleteHighlitCardStyle]}>
-                      <Left>
-                        <Text style={styles.regHrsText}>
-                          {`REPORTED HOURS : ${
-                            item['spi:regularhrs']
-                              ? item['spi:regularhrs']
-                              : '--'
-                          }`}
-                        </Text>
-                      </Left>
-                      <Right>
-                        <Text>
-                          {' '}
-                          {item['spi:genapprservreceipt'] ? (
-                            <Icon
-                              type="FontAwesome"
-                              name="circle"
-                              style={styles.greenCircle}
-                            />
-                          ) : (
-                            <Icon
-                              type="FontAwesome"
-                              name="circle"
-                              style={styles.redCircle}
-                            />
-                          )}
-                        </Text>
-                      </Right>
-                    </CardItem>
-                  </Card>
-                </TouchableLongPress>
+                <Fragment>
+                  {!isDeleting ? (
+                    <TouchableLongPress
+                      onPress={() => setItemsToDeleteAction(item)}>
+                      {getListItem(item)}
+                    </TouchableLongPress>
+                  ) : (
+                    <TouchableWithoutFeedback
+                      onPress={() => setItemsToDeleteAction(item)}>
+                      {getListItem(item)}
+                    </TouchableWithoutFeedback>
+                  )}
+                </Fragment>
               );
             }}
             keyExtractor={(item, index) => index.toString()}
