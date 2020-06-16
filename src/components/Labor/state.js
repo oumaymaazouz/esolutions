@@ -380,6 +380,7 @@ export function laborReducer(state = initialState, action) {
       return {
         ...state,
         laborTransactions: null,
+        monthlyLaborTransactions: null,
       };
     case FETCH_LABOR_TRANSACTIONS_SUCCESS:
       const laborTransactions = action.data;

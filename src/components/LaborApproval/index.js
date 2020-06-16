@@ -33,9 +33,12 @@ const LaborApprovalStack = props => {
         name="LaborMonthlyTransList"
         component={LaborMonthlyTransList}
         options={({route}) => ({
-          title: `${route.params.laborcode} : ${route.params.firstname} ${route.params.lastname}`,
+          title: `${route.params.laborcode} : ${route.params.firstname} ${
+            route.params.lastname
+          }`,
           headerTintColor: COLORS.white,
           headerStyle: styles.headerStyle,
+          headerTitleStyle: styles.headerTitleStyle,
         })}
       />
     </Stack.Navigator>
@@ -44,6 +47,7 @@ const LaborApprovalStack = props => {
 
 const styles = StyleSheet.create({
   headerStyle: {backgroundColor: COLORS.blue},
+  headerTitleStyle: {fontSize: 18, fontStyle: 'italic'},
   menuIcon: {
     fontSize: 34,
     color: COLORS.white,

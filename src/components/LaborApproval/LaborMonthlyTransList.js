@@ -81,7 +81,7 @@ const LaborMonthlyTransList = props => {
                       //     itemsToDelete: [],
                       //   })
                       // }
-                      >
+                    >
                       <Left>
                         <Text style={styles.listItemDateText}>{item[0]}</Text>
                       </Left>
@@ -120,7 +120,9 @@ const LaborMonthlyTransList = props => {
                 keyExtractor={(item, index) => index.toString()}
               />
             ) : (
-              <Loader />
+              <View style={{flex: 1, backgroundColor: 'red'}}>
+                <Loader />
+              </View>
             )}
           </View>
 
@@ -139,9 +141,14 @@ const LaborMonthlyTransList = props => {
 const styles = StyleSheet.create({
   listItemText: {
     color: COLORS.lightGray,
-    fontSize: 20,
+    fontSize: 18,
   },
-  listItemDateText: {color: COLORS.darkGray, fontWeight: 'bold', fontSize: 20},
+  listItemDateText: {
+    color: COLORS.darkGray,
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginLeft: 10,
+  },
   transCountView: {flexDirection: 'row', alignItems: 'center', marginRight: 6},
   transCountApprovedIcon: {
     color: COLORS.success,

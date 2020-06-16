@@ -91,7 +91,6 @@ const fetchLaborTransactionsFailure = error => {
   };
 };
 export function $fetchLaborTransactions(laborcode) {
-  console.log(laborcode, '**************');
   return function(dispatch, getState) {
     dispatch(fetchLaborTransactionsRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
@@ -138,6 +137,7 @@ export function laborApprovalReducer(state = initialState, action) {
       return {
         ...state,
         laborTransactions: null,
+        monthlyLaborTransactions: null,
       };
     case FETCH_LABOR_TRANSACTIONS_SUCCESS:
       const laborTransactions = action.data;
