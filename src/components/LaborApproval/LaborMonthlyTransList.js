@@ -21,6 +21,7 @@ import {getStore} from '../../store';
 import {$fetchLaborTransactions} from './state';
 import Loader from '../Shared/Loader';
 import {FlatList} from 'react-native-gesture-handler';
+import {commonStyles} from '../../common/styles';
 
 const withStore = connect(state => ({
   monthlyLaborTransactions: state.LaborApproval.monthlyLaborTransactions,
@@ -49,10 +50,10 @@ const LaborMonthlyTransList = props => {
 
   return (
     <Container>
-      <Content contentContainerStyle={{flex: 1}}>
-        <View style={{flex: 1}}>
-          <View>
-            {props.monthlyLaborTransactions ? (
+      <Content contentContainerStyle={commonStyles.contentContainerStyle}>
+        {props.monthlyLaborTransactions ? (
+          <View style={{flex: 1}}>
+            <View>
               <FlatList
                 // refreshing={!!props.monthlyLaborTransactions}
                 refreshControl={
@@ -119,20 +120,18 @@ const LaborMonthlyTransList = props => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
               />
-            ) : (
-              <View style={{flex: 1, backgroundColor: 'red'}}>
-                <Loader />
-              </View>
-            )}
-          </View>
+            </View>
 
-          <Fab
-            style={{backgroundColor: COLORS.blue}}
-            position="bottomRight"
-            onPress={() => props.navigation.push('AddTransactions')}>
-            <Icon type="Feather" name="plus" />
-          </Fab>
-        </View>
+            <Fab
+              style={{backgroundColor: COLORS.blue}}
+              position="bottomRight"
+              onPress={() => props.navigation.push('AddTransactions')}>
+              <Icon type="Feather" name="plus" />
+            </Fab>
+          </View>
+        ) : (
+          <Loader />
+        )}
       </Content>
     </Container>
   );
