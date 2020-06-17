@@ -21,6 +21,7 @@ import {getStore} from '../../store';
 import {$fetchLaborTransactions} from './state';
 import Loader from '../Shared/Loader';
 import {FlatList} from 'react-native-gesture-handler';
+import {commonStyles} from '../../common/styles';
 
 const withStore = connect(state => ({
   monthlyLaborTransactions: state.Labor.monthlyLaborTransactions,
@@ -49,10 +50,10 @@ const MonthlyTransList = props => {
 
   return (
     <Container>
-      <Content contentContainerStyle={{flex: 1}}>
-        <View style={{flex: 1}}>
-          <View>
-            {props.monthlyLaborTransactions ? (
+      <Content contentContainerStyle={commonStyles.contentContainerStyle}>
+        {props.monthlyLaborTransactions ? (
+          <View style={{flex: 1}}>
+            <View>
               <FlatList
                 // refreshing={!!props.monthlyLaborTransactions}
                 refreshControl={
@@ -66,12 +67,12 @@ const MonthlyTransList = props => {
                   Object.entries(props.monthlyLaborTransactions)
                 }
                 renderItem={({item}) => {
-                  const notApprovedTrans = item[1].filter(
-                    i => !i['spi:genapprservreceipt'],
-                  ).length;
-                  const approvedTrans = item[1].filter(
-                    i => !!i['spi:genapprservreceipt'],
-                  ).length;
+                  const notApprovedTrans = item[1]
+                    ? item[1].filter(i => !i['spi:genapprservreceipt']).length
+                    : 0;
+                  const approvedTrans = item[1]
+                    ? item[1].filter(i => !!i['spi:genapprservreceipt']).length
+                    : 0;
                   return (
                     <ListItem
                       key={item[0]}
@@ -118,18 +119,18 @@ const MonthlyTransList = props => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
               />
-            ) : (
-              <Loader />
-            )}
-          </View>
+            </View>
 
-          <Fab
-            style={{backgroundColor: COLORS.blue}}
-            position="bottomRight"
-            onPress={() => props.navigation.push('AddTransactions')}>
-            <Icon type="Feather" name="plus" />
-          </Fab>
-        </View>
+            <Fab
+              style={{backgroundColor: COLORS.blue}}
+              position="bottomRight"
+              onPress={() => props.navigation.push('AddTransactions')}>
+              <Icon type="Feather" name="plus" />
+            </Fab>
+          </View>
+        ) : (
+          <Loader />
+        )}
       </Content>
     </Container>
   );

@@ -387,8 +387,8 @@ const AddTransactionsView = props => {
     <Container>
       <Content contentContainerStyle={{flex: 1}}>
         <Card style={styles.card}>
-          {/* {proceedingAdd ? <Loader /> : getForm()} */}
-          <Text style={{ color: COLORS.lightGray}}>Work in progress...</Text>
+          {proceedingAdd ? <Loader /> : getForm()}
+          {/* <Text style={{ color: COLORS.lightGray}}>Work in progress...</Text> */}
         </Card>
       </Content>
     </Container>

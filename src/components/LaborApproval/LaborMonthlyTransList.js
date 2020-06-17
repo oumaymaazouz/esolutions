@@ -12,7 +12,6 @@ import {
   Icon,
   Body,
   View,
-  Fab,
 } from 'native-base';
 
 import {COLORS} from '../../common/colors';
@@ -121,13 +120,6 @@ const LaborMonthlyTransList = props => {
                 keyExtractor={(item, index) => index.toString()}
               />
             </View>
-
-            <Fab
-              style={{backgroundColor: COLORS.blue}}
-              position="bottomRight"
-              onPress={() => props.navigation.push('AddTransactions')}>
-              <Icon type="Feather" name="plus" />
-            </Fab>
           </View>
         ) : (
           <Loader />

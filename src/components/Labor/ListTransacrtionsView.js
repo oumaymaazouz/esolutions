@@ -81,8 +81,6 @@ const LaborTransactionsView = props => {
     }
   };
 
-  console.log('---------------------', isDeleting);
-
   const getListItem = item => {
     const day = item['spi:startdateentered']
       ? new Date(item['spi:startdateentered']).getDay()

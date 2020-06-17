@@ -89,16 +89,16 @@ const LaborStack = props => {
           headerStyle: {backgroundColor: COLORS.blue},
           headerTitleStyle: {color: 'green'},
           headerRight: () => {
-            const notApprovedTrans =
-              props.monthlyLaborTransactions &&
-              props.monthlyLaborTransactions[route.params.month].filter(
-                item => item['spi:genapprservreceipt'],
-              ).length;
-            const approvedTrans =
-              props.monthlyLaborTransactions &&
-              props.monthlyLaborTransactions[route.params.month].filter(
-                item => !item['spi:genapprservreceipt'],
-              ).length;
+            const notApprovedTrans = props.monthlyLaborTransactions
+              ? props.monthlyLaborTransactions[route.params.month].filter(
+                  item => item['spi:genapprservreceipt'],
+                ).length
+              : 0;
+            const approvedTrans = props.monthlyLaborTransactions
+              ? props.monthlyLaborTransactions[route.params.month].filter(
+                  item => !item['spi:genapprservreceipt'],
+                ).length
+              : 0;
             return (
               <View style={styles.headerRight}>
                 <View style={styles.transCountView}>
@@ -137,7 +137,9 @@ const LaborStack = props => {
                   />
                   <Text style={styles.btnDeleteText}>
                     {route.params.itemsToDelete &&
-                      route.params.itemsToDelete.length}
+                      (
+                        '0' + route.params.itemsToDelete.length.toString()
+                      ).slice(-2)}
                   </Text>
                 </Button>
               </View>
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     position: 'absolute',
     top: Platform.OS === 'ios' ? 20 : 15,
-    left: Platform.OS === 'ios' ? 31 : 32,
+    left: Platform.OS === 'ios' ? 31 : 28,
     fontWeight: 'bold',
   },
   headerRight: {
