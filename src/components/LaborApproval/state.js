@@ -1,4 +1,4 @@
-import {groupBy} from '../../common/helper';
+import {groupByProperty} from '../../common/helper';
 
 const initialState = {
   laborList: null,
@@ -149,7 +149,7 @@ export function laborApprovalReducer(state = initialState, action) {
             month: trans['spi:startdateentered'].substring(0, 7),
           };
         });
-      const monthlyLaborTransactions = groupBy(transArray, 'month');
+      const monthlyLaborTransactions = groupByProperty(transArray, 'month');
       const monthlyLabTransDesc = Object.keys(monthlyLaborTransactions)
         .sort((a, b) => new Date(b) - new Date(a))
         .reduce((acc, cv) => {

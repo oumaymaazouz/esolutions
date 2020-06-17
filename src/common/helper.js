@@ -52,9 +52,25 @@ function isPositiveNumber(n) {
   return Number(n) === n && Number(n) > 0;
 }
 
-export const groupBy = (arrayOfObjects, property) => {
+export const groupByProperty = (arrayOfObjects, property) => {
   return arrayOfObjects.reduce((acc, obj) => {
     let key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+};
+
+export const groupByPropertyOfProperty = (
+  arrayOfObjects,
+  parentPpty,
+  childPpty,
+) => {
+  return arrayOfObjects.reduce((acc, obj) => {
+    let objPpty = obj[parentPpty];
+    let key = objPpty[childPpty];
     if (!acc[key]) {
       acc[key] = [];
     }

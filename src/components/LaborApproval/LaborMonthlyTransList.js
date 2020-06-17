@@ -75,13 +75,13 @@ const LaborMonthlyTransList = props => {
                   return (
                     <ListItem
                       key={item[0]}
-                      // onPress={() =>
-                      //   props.navigation.navigate('TransactionsList', {
-                      //     month: item[0],
-                      //     itemsToDelete: [],
-                      //   })
-                      // }
-                    >
+                      onPress={() =>
+                        props.navigation.navigate('LaborTransList', {
+                          month: item[0],
+                          firstname: props.route.params.firstname,
+                          lastname: props.route.params.lastname,
+                        })
+                      }>
                       <Left>
                         <Text style={styles.listItemDateText}>{item[0]}</Text>
                       </Left>

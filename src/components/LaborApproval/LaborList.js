@@ -39,8 +39,6 @@ const LaborList = props => {
         // style={styles.flatlist}
         data={laborList}
         renderItem={({item}) => {
-          const randomColor =
-            avatarPalette[Math.floor(Math.random() * avatarPalette.length)];
           return (
             <Fragment>
               {item.person.firstname && (
@@ -54,7 +52,6 @@ const LaborList = props => {
                   }}>
                   <Left style={styles.laborInfo}>
                     <CustomAvatar
-                      color={randomColor}
                       firstname={item.person.firstname}
                       lastname={item.person.lastname}
                     />

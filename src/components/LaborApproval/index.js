@@ -9,6 +9,7 @@ import {COLORS} from '../../common/colors';
 
 import LaborList from './LaborList';
 import LaborMonthlyTransList from './LaborMonthlyTransList';
+import LaborTransList from './LaborTransList';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,18 @@ const LaborApprovalStack = props => {
           title: `${route.params.laborcode} : ${route.params.firstname} ${
             route.params.lastname
           }`,
+          headerTintColor: COLORS.white,
+          headerStyle: styles.headerStyle,
+          headerTitleStyle: styles.headerTitleStyle,
+        })}
+      />
+      <Stack.Screen
+        name="LaborTransList"
+        component={LaborTransList}
+        options={({route}) => ({
+          title: `${route.params.firstname} ${route.params.lastname} (${
+            route.params.month
+          })`,
           headerTintColor: COLORS.white,
           headerStyle: styles.headerStyle,
           headerTitleStyle: styles.headerTitleStyle,
