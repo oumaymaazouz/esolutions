@@ -8,6 +8,7 @@ export const COLORS = {
   danger: '#E38582',
   success: '#98d8a4',
   dangerHighlight: 'rgba(217, 83, 79, 0.22)',
+  successHighlight: 'rgba(152, 216, 164, 0.43)',
   highlight: 'rgba(92, 184, 92, 0.44)',
   lightBrand: '#f4f4f4',
 };

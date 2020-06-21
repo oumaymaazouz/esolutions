@@ -17,7 +17,7 @@ import {
 import {COLORS} from '../../common/colors';
 import {getStore} from '../../store';
 
-import {$fetchLaborTransactions} from './state';
+import {$fetchLaborTransactions, $removeAllTransactions} from './state';
 import Loader from '../Shared/Loader';
 import {FlatList} from 'react-native-gesture-handler';
 import {commonStyles} from '../../common/styles';
@@ -32,6 +32,7 @@ const LaborMonthlyTransList = props => {
     const {navigation} = props;
     return navigation.addListener('focus', () => {
       getData();
+      cleanSelectedTransactions();
     });
   }, [props]);
 
@@ -42,6 +43,11 @@ const LaborMonthlyTransList = props => {
     ).catch(() => console.log('ERROR FETCHING LABOR TRANSACTIONS'));
   };
 
+
+  const cleanSelectedTransactions = () => {
+    const {dispatch} = getStore();
+    dispatch($removeAllTransactions());
+  };
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getData().then(() => setRefreshing(false));

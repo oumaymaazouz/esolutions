@@ -4,6 +4,7 @@ const initialState = {
   laborList: null,
   laborTransactions: null,
   monthlyLaborTransactions: null,
+  selectedTransactions: [],
 };
 
 /** FETCH ALL LABORS */
@@ -120,6 +121,35 @@ export function $fetchLaborTransactions(laborcode) {
   };
 }
 
+/** SAVE SELECTED TRANSACTIONS IN AN ARRAY (FOR APPROVAL) */
+const SAVE_TRANSACTION = 'SAVE_TRANSACTION';
+
+export function $saveTransaction(id) {
+  return {
+    type: SAVE_TRANSACTION,
+    data: id,
+  };
+}
+
+/** REMOVE UNSELECTED TRANSACTIONS IN AN ARRAY (FOR APPROVAL) */
+const REMOVE_TRANSACTION = 'REMOVE_TRANSACTION';
+
+export function $removeTransaction(id) {
+  return {
+    type: REMOVE_TRANSACTION,
+    data: id,
+  };
+}
+
+/** REMOVE all SELECTED TRANSACTIONS */
+const REMOVE_ALL_TRANSACTIONS = 'REMOVE_ALL_TRANSACTIONS';
+
+export function $removeAllTransactions() {
+  return {
+    type: REMOVE_ALL_TRANSACTIONS,
+  };
+}
+
 /** REDUCER */
 export function laborApprovalReducer(state = initialState, action) {
   switch (action.type) {
@@ -161,6 +191,23 @@ export function laborApprovalReducer(state = initialState, action) {
         ...state,
         laborTransactions,
         monthlyLaborTransactions: monthlyLabTransDesc,
+      };
+    case SAVE_TRANSACTION:
+      return {
+        ...state,
+        selectedTransactions: [...state.selectedTransactions, action.data],
+      };
+    case REMOVE_TRANSACTION:
+      return {
+        ...state,
+        selectedTransactions: state.selectedTransactions.filter(
+          id => id !== action.data,
+        ),
+      };
+    case REMOVE_ALL_TRANSACTIONS:
+      return {
+        ...state,
+        selectedTransactions: [],
       };
     default:
       return state;
