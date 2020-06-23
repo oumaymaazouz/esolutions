@@ -124,20 +124,20 @@ export function $fetchLaborTransactions(laborcode) {
 /** SAVE SELECTED TRANSACTIONS IN AN ARRAY (FOR APPROVAL) */
 const SAVE_TRANSACTION = 'SAVE_TRANSACTION';
 
-export function $saveTransaction(id) {
+export function $saveTransaction(obj) {
   return {
     type: SAVE_TRANSACTION,
-    data: id,
+    data: obj,
   };
 }
 
 /** REMOVE UNSELECTED TRANSACTIONS IN AN ARRAY (FOR APPROVAL) */
 const REMOVE_TRANSACTION = 'REMOVE_TRANSACTION';
 
-export function $removeTransaction(id) {
+export function $removeTransaction(obj) {
   return {
     type: REMOVE_TRANSACTION,
-    data: id,
+    data: obj,
   };
 }
 
@@ -147,6 +147,73 @@ const REMOVE_ALL_TRANSACTIONS = 'REMOVE_ALL_TRANSACTIONS';
 export function $removeAllTransactions() {
   return {
     type: REMOVE_ALL_TRANSACTIONS,
+  };
+}
+
+/** APPROVE TRANSACTIONS */
+
+const HANDLE_TRANSACTION_APPROVAL_REQUEST =
+  'HANDLE_TRANSACTION_APPROVAL_REQUEST';
+
+const handleTransactionApprovalRequest = () => {
+  return {
+    type: HANDLE_TRANSACTION_APPROVAL_REQUEST,
+  };
+};
+
+const HANDLE_TRANSACTION_APPROVAL_SUCCESS =
+  'HANDLE_TRANSACTION_APPROVAL_SUCCESS';
+
+const handleTransactionApprovalSuccess = data => {
+  return {
+    type: HANDLE_TRANSACTION_APPROVAL_SUCCESS,
+    data,
+  };
+};
+
+const HANDLE_TRANSACTION_APPROVAL_FAILURE =
+  'HANDLE_TRANSACTION_APPROVAL_FAILURE';
+
+const handleTransactionApprovalFailure = error => {
+  return {
+    type: HANDLE_TRANSACTION_APPROVAL_FAILURE,
+    error,
+  };
+};
+export function $handleTransactionApproval(month, labtransid, approve) {
+  return function(dispatch, getState) {
+    dispatch(handleTransactionApprovalRequest());
+    const {DOMAIN_NAME, maxauth} = getState().Auth;
+    return fetch(
+      `${DOMAIN_NAME}/oslc/script/aprovelabor?labtransid=${labtransid}&approve=${approve}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          maxauth,
+        },
+      },
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response);
+        }
+        return response.text();
+      })
+      .then(() => {
+        dispatch(
+          handleTransactionApprovalSuccess({
+            month,
+            labtransid,
+            genapprservreceipt: approve,
+          }),
+        );
+        dispatch($removeAllTransactions());
+      })
+      .catch(error => {
+        dispatch(handleTransactionApprovalFailure(error));
+        throw error;
+      });
   };
 }
 
@@ -192,22 +259,29 @@ export function laborApprovalReducer(state = initialState, action) {
         laborTransactions,
         monthlyLaborTransactions: monthlyLabTransDesc,
       };
-    case SAVE_TRANSACTION:
+    case HANDLE_TRANSACTION_APPROVAL_SUCCESS:
+      const updatedMonthTrans = state.monthlyLaborTransactions[
+        action.data.month
+      ].map(item => {
+        const genapprservreceipt = action.data.genapprservreceipt
+          ? true
+          : false;
+        console.log("item['spi:labtransid']", item['spi:labtransid']);
+        console.log('action.data.labtransid', action.data.labtransid);
+        if (item['spi:labtransid'] === action.data.labtransid) {
+          item['spi:genapprservreceipt'] = genapprservreceipt;
+          return item;
+        } else {
+          return item;
+        }
+      });
+      // console.log('updatedMonthTrans', updatedMonthTrans);
       return {
         ...state,
-        selectedTransactions: [...state.selectedTransactions, action.data],
-      };
-    case REMOVE_TRANSACTION:
-      return {
-        ...state,
-        selectedTransactions: state.selectedTransactions.filter(
-          id => id !== action.data,
-        ),
-      };
-    case REMOVE_ALL_TRANSACTIONS:
-      return {
-        ...state,
-        selectedTransactions: [],
+        monthlyLaborTransactions: {
+          ...state.monthlyLaborTransactions,
+          [action.data.month]: updatedMonthTrans,
+        },
       };
     default:
       return state;

@@ -26,7 +26,7 @@ const LaborTransItem = props => {
     removeTrans,
   } = props;
 
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(props.selectedItem);
 
   const checkedCardStyle = isSelected
     ? {backgroundColor: COLORS.successHighlight}
@@ -56,12 +56,16 @@ const LaborTransItem = props => {
             onValueChange={() => {
               if (!isSelected) {
                 setIsSelected(true);
-                dispatch($saveTransaction(item['spi:labtransid']));
-                setSelectedTrans(item['spi:labtransid']);
+                setSelectedTrans(
+                  item['spi:labtransid'],
+                  item['spi:genapprservreceipt'],
+                );
               } else {
                 setIsSelected(false);
-                dispatch($removeTransaction(item['spi:labtransid']));
-                removeTrans(item['spi:labtransid']);
+                removeTrans(
+                  item['spi:labtransid'],
+                  item['spi:genapprservreceipt'],
+                );
               }
             }}
           />

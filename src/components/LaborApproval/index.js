@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {View, Text, StyleSheet} from 'react-native';
-import {Button, Icon} from 'native-base';
+import {View, Text, StyleSheet, Alert} from 'react-native';
+import {Button, Icon, Toast} from 'native-base';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -12,7 +12,7 @@ import LaborList from './LaborList';
 import LaborMonthlyTransList from './LaborMonthlyTransList';
 import LaborTransList from './LaborTransList';
 import {getStore} from '../../store';
-import {$removeAllTransactions} from './state';
+import {$handleTransactionApproval} from './state';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +21,39 @@ const withStore = connect(state => ({
 }));
 const LaborApprovalStack = props => {
   const {selectedTransactions} = props;
+
+  const approveTransactions = navigation => {
+    const arrayIds = selectedTransactions.filter(
+      item => item.genapprservreceipt === false,
+    );
+    const {dispatch} = getStore();
+    Alert.alert(
+      'Delete',
+      'Do you really want to approve selected transactions ?',
+      [
+        {
+          text: 'Approval',
+          onPress: () => {
+            Promise.all(
+              arrayIds.map(async obj => {
+                await dispatch($handleTransactionApproval(obj.labtransid, 1));
+              }),
+            ).then(() => {
+              navigation.navigate('LaborMonthlyTransList');
+              Toast.show({
+                text: 'Successful approval.',
+                type: 'success',
+                duration: 6000,
+              });
+            });
+          },
+        },
+        {
+          text: 'Cancel',
+        },
+      ],
+    );
+  };
   return (
     <Stack.Navigator initialRouteName="LaborList">
       <Stack.Screen
@@ -60,10 +93,45 @@ const LaborApprovalStack = props => {
             return (
               <View>
                 {isDeleting ? (
-                  <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
                     <Text style={styles.headerTitleStyle}>
                       {selectedTransactions.length}
                     </Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Button
+                        transparent
+                        style={{
+                          width: 60,
+                          borderWidth: 1,
+                          borderColor: COLORS.danger,
+                          marginRight: 10,
+                        }}>
+                        <Icon
+                          type="AntDesign"
+                          name="closecircleo"
+                          style={{color: COLORS.danger}}
+                        />
+                      </Button>
+                      <Button
+                        transparent
+                        onPress={() => approveTransactions(navigation)}
+                        style={{
+                          width: 60,
+                          borderWidth: 1,
+                          borderColor: COLORS.success,
+                        }}>
+                        <Icon
+                          type="AntDesign"
+                          name="checkcircleo"
+                          style={{color: COLORS.success}}
+                        />
+                      </Button>
+                    </View>
                   </View>
                 ) : (
                   <View>
