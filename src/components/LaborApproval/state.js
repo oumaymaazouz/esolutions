@@ -180,40 +180,38 @@ const handleTransactionApprovalFailure = error => {
     error,
   };
 };
+
 export function $handleTransactionApproval(month, labtransid, approve) {
-  return function(dispatch, getState) {
+  return async function(dispatch, getState) {
     dispatch(handleTransactionApprovalRequest());
     const {DOMAIN_NAME, maxauth} = getState().Auth;
-    return fetch(
-      `${DOMAIN_NAME}/oslc/script/aprovelabor?labtransid=${labtransid}&approve=${approve}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          maxauth,
+    try {
+      const reponse = await fetch(
+        `${DOMAIN_NAME}/oslc/script/aprovelabor?labtransid=${labtransid}&approve=${approve}`,
+        {
+          method: 'POST',
+          headers: {
+            maxauth,
+          },
         },
-      },
-    )
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response);
-        }
-        return response.text();
-      })
-      .then(() => {
-        dispatch(
-          handleTransactionApprovalSuccess({
-            month,
-            labtransid,
-            genapprservreceipt: approve,
-          }),
-        );
-        dispatch($removeAllTransactions());
-      })
-      .catch(error => {
-        dispatch(handleTransactionApprovalFailure(error));
-        throw error;
-      });
+      );
+      if (!reponse.ok) {
+        const payload = await reponse.json();
+        console.log(payload, '---------------------');
+        throw Error(reponse);
+      }
+
+      dispatch(
+        handleTransactionApprovalSuccess({
+          month,
+          labtransid,
+          genapprservreceipt: approve,
+        }),
+      );
+    } catch (error) {
+      dispatch(handleTransactionApprovalFailure(error));
+      throw error;
+    }
   };
 }
 
@@ -266,8 +264,7 @@ export function laborApprovalReducer(state = initialState, action) {
         const genapprservreceipt = action.data.genapprservreceipt
           ? true
           : false;
-        console.log("item['spi:labtransid']", item['spi:labtransid']);
-        console.log('action.data.labtransid', action.data.labtransid);
+
         if (item['spi:labtransid'] === action.data.labtransid) {
           item['spi:genapprservreceipt'] = genapprservreceipt;
           return item;
@@ -275,7 +272,6 @@ export function laborApprovalReducer(state = initialState, action) {
           return item;
         }
       });
-      // console.log('updatedMonthTrans', updatedMonthTrans);
       return {
         ...state,
         monthlyLaborTransactions: {

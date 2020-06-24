@@ -30,40 +30,25 @@ const LaborTransList = props => {
     [],
   );
 
-  console.log('selectedTransToApprove', selectedTransToApprove);
-  console.log('selectedTransToDisapprove', selectedTransToDisapprove);
-
   const approveTrans = () => {
     const {dispatch} = getStore();
     Alert.alert(
-      'Delete',
+      'Approve',
       'Do you really want to approve selected transactions ?',
       [
         {
           text: 'Approval',
-          onPress: () => {
-            Promise.all(
-              selectedTransToApprove.map(async id => {
-                await dispatch(
-                  $handleTransactionApproval(route.params.month, id, 1),
-                );
-              }),
-            )
-              .then(() => {
-                setSelectedTransToApprove([]);
-                Toast.show({
-                  text: 'Successful approval.',
-                  type: 'success',
-                  duration: 6000,
-                });
-              })
-              .catch(() =>
-                Toast.show({
-                  text: 'Approval failed.',
-                  type: 'danger',
-                  duration: 6000,
-                }),
-              );
+          onPress: async () => {
+            for (let i = 0; i < selectedTransToApprove.length; i++) {
+              let id = selectedTransToApprove[i];
+              await dispatch(
+                $handleTransactionApproval(route.params.month, id, 1),
+              )
+                .then(() => console.log('SUCCESS', id))
+                .catch(() => console.log('FAILURE', id));
+            }
+
+            return;
           },
         },
         {
@@ -76,7 +61,7 @@ const LaborTransList = props => {
   const disApproveTrans = () => {
     const {dispatch} = getStore();
     Alert.alert(
-      'Delete',
+      'Disapprove',
       'Do you really want to disapprove selected transactions ?',
       [
         {
@@ -86,11 +71,13 @@ const LaborTransList = props => {
               selectedTransToDisapprove.map(async id => {
                 await dispatch(
                   $handleTransactionApproval(route.params.month, id, 0),
-                );
+                )
+                  .then(() => console.log('SUCCESS', id))
+                  .catch(() => console.log('FAILURE', id));
               }),
             )
               .then(() => {
-                selectedTransToDisapprove([]);
+                setSelectedTransToDisapprove([]);
                 Toast.show({
                   text: 'Successful disapproval.',
                   type: 'success',
