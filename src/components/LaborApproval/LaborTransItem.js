@@ -8,8 +8,6 @@ import CheckBox from '@react-native-community/checkbox';
 import {fullFormatDate} from '../../common/helper';
 
 import {COLORS} from '../../common/colors';
-import {$saveTransaction, $removeTransaction} from './state';
-import {getStore} from '../../store';
 import {connect} from 'react-redux';
 
 const withStore = connect(state => ({
@@ -26,28 +24,27 @@ const LaborTransItem = props => {
     removeTrans,
     selectedTransToApprove,
     selectedTransToDisapprove,
+    itemIsSelected,
   } = props;
 
-  const [isSelected, setIsSelected] = useState(props.selectedItem);
+  const [isSelected, setIsSelected] = useState(false);
 
   const checkedCardStyle = isSelected
     ? {backgroundColor: COLORS.successHighlight}
-    : {};
+    : {backgroundColor: 'transparent'};
 
-  const {dispatch} = getStore();
+  useEffect(() => {
+    if (!itemIsSelected) {
+      setIsSelected(false);
+    }
+  }, [itemIsSelected]);
 
   return (
     <Card>
       <CardItem
         header
         bordered
-        style={[
-          styles.cardHeader,
-          weekendHighlitCardStyle,
-          selectedTransToApprove.length > 0 || selectedTransToDisapprove.length
-            ? checkedCardStyle
-            : {backgroundColor: 'transparent'},
-        ]}>
+        style={[styles.cardHeader, weekendHighlitCardStyle, checkedCardStyle]}>
         <Left style={styles.cardHeaderDesc}>
           <Text style={styles.cardHeaderWonum}>
             {`WO# : ${
@@ -60,12 +57,7 @@ const LaborTransItem = props => {
         <Right>
           <CheckBox
             disabled={false}
-            value={
-              selectedTransToApprove.length > 0 ||
-              selectedTransToDisapprove.length > 0
-                ? isSelected
-                : false
-            }
+            value={isSelected}
             onValueChange={() => {
               if (!isSelected) {
                 setIsSelected(true);
@@ -84,15 +76,7 @@ const LaborTransItem = props => {
           />
         </Right>
       </CardItem>
-      <CardItem
-        bordered
-        style={[
-          weekendHighlitCardStyle,
-          selectedTransToApprove.length > 0 ||
-          selectedTransToDisapprove.length > 0
-            ? checkedCardStyle
-            : {backgroundColor: 'transparent'},
-        ]}>
+      <CardItem bordered style={[weekendHighlitCardStyle, checkedCardStyle]}>
         <Body>
           <View style={styles.cardItemStyle}>
             <Text style={styles.cardLabelItem}>Date : </Text>
@@ -130,13 +114,7 @@ const LaborTransItem = props => {
       <CardItem
         footer
         bordered
-        style={[
-          weekendHighlitCardStyle,
-          selectedTransToApprove.length > 0 ||
-          selectedTransToDisapprove.length > 0
-            ? checkedCardStyle
-            : {backgroundColor: 'transparent'},
-        ]}>
+        style={[weekendHighlitCardStyle, checkedCardStyle]}>
         <Left style={{padding: 0}}>
           <Text style={styles.regHrsText}>
             {`REPORTED HOURS : ${
@@ -145,8 +123,6 @@ const LaborTransItem = props => {
           </Text>
         </Left>
         <Right>
-          <Text>{selectedTransToApprove.length}</Text>
-          <Text>{selectedTransToDisapprove.length}</Text>
           <Text>
             {item['spi:genapprservreceipt'] ? (
               <Icon

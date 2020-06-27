@@ -13,6 +13,8 @@ import {
   Toast,
 } from 'native-base';
 
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import {groupByPropertyOfProperty} from '../../common/helper';
 import {COLORS} from '../../common/colors';
 import {commonStyles} from '../../common/styles';
@@ -29,7 +31,7 @@ const LaborTransList = props => {
   const [selectedTransToDisapprove, setSelectedTransToDisapprove] = useState(
     [],
   );
-
+  const [processing, setProcessing] = useState(false);
   const approveTrans = () => {
     const {dispatch} = getStore();
     Alert.alert(
@@ -39,6 +41,7 @@ const LaborTransList = props => {
         {
           text: 'Approval',
           onPress: async () => {
+            setProcessing(true);
             for (let i = 0; i < selectedTransToApprove.length; i++) {
               let id = selectedTransToApprove[i];
               await dispatch(
@@ -48,6 +51,7 @@ const LaborTransList = props => {
                 .catch(() => console.log('FAILURE', id));
             }
             setSelectedTransToApprove([]);
+            setProcessing(false);
             return;
           },
         },
@@ -67,6 +71,7 @@ const LaborTransList = props => {
         {
           text: 'Disapproval',
           onPress: async () => {
+            setProcessing(true);
             for (let i = 0; i < selectedTransToDisapprove.length; i++) {
               let id = selectedTransToDisapprove[i];
               await dispatch(
@@ -76,6 +81,7 @@ const LaborTransList = props => {
                 .catch(() => console.log('FAILURE', id));
             }
             setSelectedTransToDisapprove([]);
+            setProcessing(false);
             return;
           },
         },
@@ -103,7 +109,7 @@ const LaborTransList = props => {
     return (
       <LaborTransItem
         item={item}
-        selectedItem={
+        itemIsSelected={
           selectedTransToApprove.includes(item['spi:labtransid']) ||
           selectedTransToDisapprove.includes(item['spi:labtransid'])
         }
@@ -174,6 +180,11 @@ const LaborTransList = props => {
           data={filtredData}
           renderItem={({item}) => getListItem(item)}
           keyExtractor={(item, index) => index.toString()}
+        />
+        <Spinner
+          visible={processing}
+          color={COLORS.success}
+          overlayColor="rgba(0, 0, 0, 0.56)"
         />
       </Content>
       {tabs && (
