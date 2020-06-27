@@ -24,6 +24,8 @@ const LaborTransItem = props => {
     lastname,
     setSelectedTrans,
     removeTrans,
+    selectedTransToApprove,
+    selectedTransToDisapprove,
   } = props;
 
   const [isSelected, setIsSelected] = useState(props.selectedItem);
@@ -39,7 +41,13 @@ const LaborTransItem = props => {
       <CardItem
         header
         bordered
-        style={[styles.cardHeader, weekendHighlitCardStyle, checkedCardStyle]}>
+        style={[
+          styles.cardHeader,
+          weekendHighlitCardStyle,
+          selectedTransToApprove.length > 0 || selectedTransToDisapprove.length
+            ? checkedCardStyle
+            : {backgroundColor: 'transparent'},
+        ]}>
         <Left style={styles.cardHeaderDesc}>
           <Text style={styles.cardHeaderWonum}>
             {`WO# : ${
@@ -52,7 +60,12 @@ const LaborTransItem = props => {
         <Right>
           <CheckBox
             disabled={false}
-            value={isSelected}
+            value={
+              selectedTransToApprove.length > 0 ||
+              selectedTransToDisapprove.length > 0
+                ? isSelected
+                : false
+            }
             onValueChange={() => {
               if (!isSelected) {
                 setIsSelected(true);
@@ -71,7 +84,15 @@ const LaborTransItem = props => {
           />
         </Right>
       </CardItem>
-      <CardItem bordered style={[weekendHighlitCardStyle, checkedCardStyle]}>
+      <CardItem
+        bordered
+        style={[
+          weekendHighlitCardStyle,
+          selectedTransToApprove.length > 0 ||
+          selectedTransToDisapprove.length > 0
+            ? checkedCardStyle
+            : {backgroundColor: 'transparent'},
+        ]}>
         <Body>
           <View style={styles.cardItemStyle}>
             <Text style={styles.cardLabelItem}>Date : </Text>
@@ -109,7 +130,13 @@ const LaborTransItem = props => {
       <CardItem
         footer
         bordered
-        style={[weekendHighlitCardStyle, checkedCardStyle]}>
+        style={[
+          weekendHighlitCardStyle,
+          selectedTransToApprove.length > 0 ||
+          selectedTransToDisapprove.length > 0
+            ? checkedCardStyle
+            : {backgroundColor: 'transparent'},
+        ]}>
         <Left style={{padding: 0}}>
           <Text style={styles.regHrsText}>
             {`REPORTED HOURS : ${
@@ -118,6 +145,8 @@ const LaborTransItem = props => {
           </Text>
         </Left>
         <Right>
+          <Text>{selectedTransToApprove.length}</Text>
+          <Text>{selectedTransToDisapprove.length}</Text>
           <Text>
             {item['spi:genapprservreceipt'] ? (
               <Icon

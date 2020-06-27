@@ -47,7 +47,7 @@ const LaborTransList = props => {
                 .then(() => console.log('SUCCESS', id))
                 .catch(() => console.log('FAILURE', id));
             }
-
+            setSelectedTransToApprove([]);
             return;
           },
         },
@@ -66,31 +66,17 @@ const LaborTransList = props => {
       [
         {
           text: 'Disapproval',
-          onPress: () => {
-            Promise.all(
-              selectedTransToDisapprove.map(async id => {
-                await dispatch(
-                  $handleTransactionApproval(route.params.month, id, 0),
-                )
-                  .then(() => console.log('SUCCESS', id))
-                  .catch(() => console.log('FAILURE', id));
-              }),
-            )
-              .then(() => {
-                setSelectedTransToDisapprove([]);
-                Toast.show({
-                  text: 'Successful disapproval.',
-                  type: 'success',
-                  duration: 6000,
-                });
-              })
-              .catch(() =>
-                Toast.show({
-                  text: 'Disapproval failed.',
-                  type: 'danger',
-                  duration: 6000,
-                }),
-              );
+          onPress: async () => {
+            for (let i = 0; i < selectedTransToDisapprove.length; i++) {
+              let id = selectedTransToDisapprove[i];
+              await dispatch(
+                $handleTransactionApproval(route.params.month, id, 0),
+              )
+                .then(() => console.log('SUCCESS', id))
+                .catch(() => console.log('FAILURE', id));
+            }
+            setSelectedTransToDisapprove([]);
+            return;
           },
         },
         {
@@ -103,9 +89,6 @@ const LaborTransList = props => {
   const {monthlyLaborTransactions, route} = props;
   const currentTrans =
     monthlyLaborTransactions && monthlyLaborTransactions[route.params.month];
-  const currentTransByProject =
-    currentTrans &&
-    groupByPropertyOfProperty(currentTrans, 'workordernt', 'wonum');
 
   const currentTransByProjectName =
     currentTrans &&
@@ -152,6 +135,8 @@ const LaborTransList = props => {
             );
           }
         }}
+        selectedTransToApprove={selectedTransToApprove}
+        selectedTransToDisapprove={selectedTransToDisapprove}
       />
     );
   };
@@ -198,7 +183,7 @@ const LaborTransList = props => {
               <FooterTab key={index}>
                 <Button
                   active={tabs && selectedTab === item.projName.slice(0, 10)}
-                  onPress={() => setSelectedTab(item.projName.slice(0, 10))}>
+                  onPress={() => setSelectedTab(item.projName)}>
                   <Text>{`${item.projName.substring(
                     item.projName.lastIndexOf('(') + 1,
                     item.projName.lastIndexOf(')'),
