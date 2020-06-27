@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
-import {Dimensions, View, Image, Text, StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
+import {Dimensions, View, Image, Text, StyleSheet} from 'react-native';
 import {
   Input,
   Container,
@@ -22,7 +23,6 @@ import {COLORS} from '../../common/colors';
 import {getStore} from '../../store';
 
 import {$login} from './state';
-import {commonStyles} from '../../common/styles';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -31,19 +31,49 @@ const withStore = connect(state => ({
 }));
 
 const LoginView = props => {
-  const [domain, setDomain] = useState('http://ess-maximosupport.com/support');
-  const [username, setUsername] = useState('mohamed.chihaoui');
-  const [password, setPassword] = useState('Esolutions2016');
+  useEffect(() => {
+    getCredentials();
+  }, []);
+  const [domain, setDomain] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
 
   const [processing, setProcessing] = useState(false);
+
+  const getCredentials = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('credentials');
+      if (jsonValue !== null) {
+        const credentials = JSON.parse(jsonValue);
+        setDomain(credentials.domain);
+        setUsername(credentials.username);
+        setPassword(credentials.password);
+      }
+    } catch (e) {
+      console.log('error reading credentials from asyncStorage');
+    }
+  };
+  const storeCredentials = async (dom, usern, pass) => {
+    try {
+      const credentials = JSON.stringify({
+        domain: dom,
+        username: usern,
+        password: pass,
+      });
+      await AsyncStorage.setItem('credentials', credentials);
+    } catch (e) {
+      console.log('error saving credentials in asyncStorage');
+    }
+  };
   const loginAction = (usern, pass) => {
     const {dispatch} = getStore();
     setProcessing(true);
     dispatch($login(domain, usern.trim(), pass))
       .then(() => {
         setProcessing(false);
+        storeCredentials(domain, usern.trim(), pass);
         props.navigation.navigate('Home');
       })
       .catch(error => {
