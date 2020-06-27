@@ -13,6 +13,7 @@ import {
   Icon,
   Button,
   Spinner,
+  Footer,
 } from 'native-base';
 
 import LOGO from '../../assets/logo.png';
@@ -21,6 +22,7 @@ import {COLORS} from '../../common/colors';
 import {getStore} from '../../store';
 
 import {$login} from './state';
+import {commonStyles} from '../../common/styles';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -58,7 +60,7 @@ const LoginView = props => {
   return (
     <Container>
       <Header style={styles.header} />
-      <Content contentContainerStyle={styles.contentContainer}>
+      <Content>
         <View style={styles.logoWrapper}>
           <Image source={LOGO} style={styles.logo} />
         </View>
@@ -124,6 +126,9 @@ const LoginView = props => {
           </View>
         </Form>
       </Content>
+      <Footer style={styles.footer}>
+        <Text style={styles.footerText}>Version 0.0.1</Text>
+      </Footer>
     </Container>
   );
 };
@@ -133,6 +138,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     elevation: 0,
   },
+  footer: {
+    backgroundColor: 'transparent',
+    elevation: 0,
+    alignItems: 'center',
+  },
+  footerText: {color: COLORS.lightGray, fontSize: 14},
   logoWrapper: {
     marginTop: screenHeight / 5,
     paddingHorizontal: 20,
@@ -165,10 +176,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginHorizontal: 20,
     justifyContent: 'center',
-  },
-
-  footer: {
-    backgroundColor: 'transparent',
   },
   loginButtonText: {
     color: COLORS.white,

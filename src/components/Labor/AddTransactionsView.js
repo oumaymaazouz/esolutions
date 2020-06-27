@@ -38,6 +38,7 @@ import Loader from '../Shared/Loader';
 const AddTransactionsView = props => {
   const [transaction, setTransaction] = useState({
     regularhrs: 8,
+    zzreportedhrs: 8,
     craft: null,
     wonum: null,
     taskid: null,
@@ -187,6 +188,7 @@ const AddTransactionsView = props => {
               setTransaction({
                 ...transaction,
                 regularhrs: parseFloat(value),
+                zzreportedhrs: parseFloat(value),
               })
             }
           />

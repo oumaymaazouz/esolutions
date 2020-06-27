@@ -197,7 +197,6 @@ export function $handleTransactionApproval(month, labtransid, approve) {
       );
       if (!reponse.ok) {
         const payload = await reponse.json();
-        console.log(payload, '---------------------');
         throw Error(reponse);
       }
 

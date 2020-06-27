@@ -107,6 +107,10 @@ const LaborTransList = props => {
     currentTrans &&
     groupByPropertyOfProperty(currentTrans, 'workordernt', 'wonum');
 
+  const currentTransByProjectName =
+    currentTrans &&
+    groupByPropertyOfProperty(currentTrans, 'workordernt', 'description');
+
   const getListItem = item => {
     const day = item['spi:startdateentered']
       ? new Date(item['spi:startdateentered']).getDay()
@@ -153,17 +157,17 @@ const LaborTransList = props => {
   };
 
   const tabs =
-    currentTransByProject &&
-    Object.entries(currentTransByProject).map(item => ({
-      projId: item[0],
+    currentTransByProjectName &&
+    Object.entries(currentTransByProjectName).map(item => ({
+      projName: item[0],
       data: item[1],
       dataLength: item[1].length,
     }));
 
-  const [selectedTab, setSelectedTab] = useState(tabs && tabs[0].projId);
+  const [selectedTab, setSelectedTab] = useState(tabs && tabs[0].projName);
   const filtredData =
     currentTrans &&
-    currentTrans.filter(item => item.workordernt.wonum === selectedTab);
+    currentTrans.filter(item => item.workordernt.description === selectedTab);
   return (
     <Container>
       <Segment>
@@ -193,9 +197,12 @@ const LaborTransList = props => {
             tabs.map((item, index) => (
               <FooterTab key={index}>
                 <Button
-                  active={tabs && selectedTab === item.projId}
-                  onPress={() => setSelectedTab(item.projId)}>
-                  <Text>{`${item.projId} (${item.dataLength})`}</Text>
+                  active={tabs && selectedTab === item.projName.slice(0, 10)}
+                  onPress={() => setSelectedTab(item.projName.slice(0, 10))}>
+                  <Text>{`${item.projName.substring(
+                    item.projName.lastIndexOf('(') + 1,
+                    item.projName.lastIndexOf(')'),
+                  )} (${item.dataLength})`}</Text>
                 </Button>
               </FooterTab>
             ))}
