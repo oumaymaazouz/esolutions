@@ -22,8 +22,6 @@ const LaborTransItem = props => {
     lastname,
     setSelectedTrans,
     removeTrans,
-    selectedTransToApprove,
-    selectedTransToDisapprove,
     itemIsSelected,
   } = props;
 

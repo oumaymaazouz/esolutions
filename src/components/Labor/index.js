@@ -35,23 +35,23 @@ const LaborStack = props => {
               arrayIds.map(async id => {
                 await dispatch($deleteTransaction(id));
               }),
-            ).then(() => {
-              Toast.show({
-                text: 'Bulk delete successful.',
-                type: 'success',
-                duration: 6000,
-              });
-              dispatch($fetchLaborTransactions())
-                .then(() => navigation.goBack())
-                .catch(() => {
-                  navigation.goBack();
-                  Toast.show({
-                    text: 'Bulk delete failed.',
-                    type: 'danger',
-                    duration: 6000,
-                  });
+            )
+              .then(() => {
+                Toast.show({
+                  text: 'Bulk delete successful.',
+                  type: 'success',
+                  duration: 6000,
                 });
-            });
+                navigation.goBack();
+              })
+              .catch(() => {
+                Toast.show({
+                  text: 'Bulk delete failed.',
+                  type: 'danger',
+                  duration: 6000,
+                });
+                navigation.goBack();
+              });
           },
         },
         {
