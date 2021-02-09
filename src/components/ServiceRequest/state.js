@@ -5,6 +5,64 @@ const initialState = {
   activeParent: null,
 };
 
+/** FETCH ALL ATTACHMENTS OF SERVICE REQUESTS */
+
+const FETCH_ALL_ATTACHMENTS_REQUEST = 'FETCH_ALL_ATTACHMENTS_REQUEST';
+
+const fetchAllAttRequest = () => {
+  return {
+    type: FETCH_ALL_ATTACHMENTS_REQUEST,
+  };
+};
+
+const FETCH_ALL_ATTACHMENTS_SUCCESS = 'FETCH_ALL_ATTACHMENTS_SUCCESS';
+
+const fetchAllAttSuccess = data => {
+  return {
+    type: FETCH_ALL_ATTACHMENTS_SUCCESS,
+    data,
+  };
+};
+
+const FETCH_ALL_ATTACHMENTS_FAILURE = 'FETCH_ALL_ATTACHMENTS_FAILURE';
+
+const fetchAllAttFailure = () => {
+  return {
+    type: FETCH_ALL_ATTACHMENTS_FAILURE,
+  };
+};
+
+export function fetchAllAtt(urlsWithTicketIds) {
+  return function(dispatch, getState) {
+    dispatch(fetchAllAttRequest());
+    const {maxauth} = getState().Auth;
+
+    urlsWithTicketIds.map(async item => {
+      try {
+        const response = await fetch(`${item.url}/doclinks`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            maxauth,
+          },
+        });
+        if (!response.ok) {
+          throw Error(response);
+        }
+        const payload = await response.json();
+        return dispatch(
+          fetchAllAttSuccess({
+            ticketid: item.ticketid,
+            payload: payload['rdfs:member'],
+          }),
+        );
+      } catch (error) {
+        dispatch(fetchAllAttFailure());
+      }
+    });
+  };
+}
+
 /** FETCH ALL SR */
 
 const FETCH_SR_REQUEST = 'FETCH_SR_REQUEST';
@@ -56,6 +114,12 @@ export function $fetchSr() {
       const payload = await response.json();
 
       await dispatch(fetchSrSuccess(payload['rdfs:member']));
+
+      const urlsWithTicketIds = await payload['rdfs:member'].map(item => ({
+        ticketid: item['spi:ticketid'],
+        url: item['rdf:about'],
+      }));
+      await dispatch(fetchAllAtt(urlsWithTicketIds));
     } catch (error) {
       dispatch(fetchSrFailure(error));
       throw error;
@@ -327,6 +391,22 @@ export function serviceRequestReducer(state = initialState, action) {
         ...state,
         attachments: action.data,
       };
+    case FETCH_ALL_ATTACHMENTS_SUCCESS: {
+      const list = state.list;
+      const selectedSR = list.find(
+        item => item['spi:ticketid'] === action.data.ticketid,
+      );
+      selectedSR.attachments = action.data.payload;
+      const foundIndex = list.findIndex(item => {
+        item['spi:ticketid'] === selectedSR['spi:ticketid'];
+      });
+      list[foundIndex] = selectedSR;
+      return {
+        ...state,
+        list,
+      };
+    }
+
     default:
       return state;
   }

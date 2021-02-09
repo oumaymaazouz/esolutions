@@ -96,7 +96,7 @@ const WorkLogView = props => {
             />
           </View>
           <Fab style={{backgroundColor: COLORS.blue}} position="bottomRight">
-            <Icon type="Feather" name="plus" />
+            <Icon type="AntDesign" name="message1" />
           </Fab>
         </View>
       </Content>

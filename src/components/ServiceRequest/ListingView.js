@@ -119,7 +119,6 @@ const ListingView = props => {
                         )}
 
                         <TouchableOpacity
-                          disabled={!item['spi:worklog']}
                           onPress={() =>
                             props.navigation.navigate('WorkLogView', {
                               ticketid: item['spi:ticketid'],
@@ -161,7 +160,9 @@ const ListingView = props => {
                               top: -1,
                               left: 42,
                             }}>
-                            <Text>3</Text>
+                            <Text>
+                              {item.attachments ? item.attachments.length : 0}
+                            </Text>
                           </Badge>
                           <Icon
                             type="Entypo"
