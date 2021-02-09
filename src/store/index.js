@@ -8,6 +8,7 @@ import {authReducer} from '../components/Auth/state';
 import {TicketsReducer} from '../components/Tickets/state';
 import {laborReducer} from '../components/Labor/state';
 import {laborApprovalReducer} from '../components/LaborApproval/state';
+import {serviceRequestReducer} from '../components/ServiceRequest/state';
 
 const persistConfig = {
   key: 'root',
@@ -33,6 +34,7 @@ export function setUpStore() {
     Ticket: TicketsReducer,
     Labor: laborReducer,
     LaborApproval: laborApprovalReducer,
+    ServiceRequest: serviceRequestReducer,
   });
   persistedReducer = persistReducer(persistConfig, rootReducer);
   store = createStore(persistedReducer, applyMiddleware(thunk, logger));

@@ -36,6 +36,18 @@ function SideBar(props) {
           </TouchableOpacity>
         )}
       </View>
+      <DrawerItem
+        label="Service Request"
+        labelStyle={styles.labelStyle}
+        // icon={() => (
+        //   <Icon
+        //     type="FontAwesome5"
+        //     name="business-time"
+        //     style={styles.drawerItemIcon}
+        //   />
+        // )}
+        onPress={() => props.navigation.navigate('LaborTransactions')}
+      />
       {/* <DrawerItem
         label="Tickets"
         labelStyle={styles.labelStyle}
@@ -48,7 +60,7 @@ function SideBar(props) {
         )}
         onPress={() => props.navigation.navigate('Tickets')}
       /> */}
-      <DrawerItem
+      {/* <DrawerItem
         label="Labor reporting"
         labelStyle={styles.labelStyle}
         icon={() => (
@@ -59,7 +71,7 @@ function SideBar(props) {
           />
         )}
         onPress={() => props.navigation.navigate('LaborTransactions')}
-      />
+      /> */}
       {/* <DrawerItem
         label="Map"
         labelStyle={styles.labelStyle}
@@ -68,7 +80,7 @@ function SideBar(props) {
         )}
         onPress={() => props.navigation.navigate("Map")}
       /> */}
-      <DrawerItem
+      {/* <DrawerItem
         label="Labor approval"
         labelStyle={styles.labelStyle}
         icon={() => (
@@ -79,7 +91,7 @@ function SideBar(props) {
           />
         )}
         onPress={() => props.navigation.navigate('LaborApprovalStack')}
-      />
+      /> */}
       <DrawerItem
         label="Logout"
         labelStyle={styles.labelStyle}

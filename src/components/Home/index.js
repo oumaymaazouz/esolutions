@@ -9,6 +9,7 @@ import ProfileView from '../Auth/ProfileView';
 import LaborStack from '../Labor';
 import {COLORS} from '../../common/colors';
 import LaborApprovalStack from '../LaborApproval';
+import ServiceRequestStack from '../ServiceRequest';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,10 +20,11 @@ const Home = () => {
       drawerContentOptions={{
         activeTintColor: '#1d6b5b',
       }}
-      initialRouteName="LaborTransactions"
+      initialRouteName="ServiceRequest"
       drawerPosition="left"
       drawerType="front">
-      <Drawer.Screen
+      <Drawer.Screen name="ServiceRequest" component={ServiceRequestStack} />
+      {/* <Drawer.Screen
         name="Profile"
         component={ProfileView}
         options={{
@@ -34,8 +36,8 @@ const Home = () => {
       />
       <Drawer.Screen name="LaborTransactions" component={LaborStack} />
       <Drawer.Screen name="LaborApprovalStack" component={LaborApprovalStack} />
-      {/* <Drawer.Screen name="Tickets" component={TicketsStack} /> */}
-      <Drawer.Screen name="Map" component={MappingView} />
+      <Drawer.Screen name="Tickets" component={TicketsStack} />
+      <Drawer.Screen name="Map" component={MappingView} /> */}
     </Drawer.Navigator>
   );
 };

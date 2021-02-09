@@ -30,6 +30,7 @@
     "react-native-maps": "0.27.1",
     "react-native-modal-datetime-picker": "^8.7.1",
     "react-native-reanimated": "^1.9.0",
+    "react-native-render-html": "^5.0.1",
     "react-native-safe-area-context": "^3.0.2",
     "react-native-screens": "^2.8.0",
     "react-redux": "^7.2.0",
